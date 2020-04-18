@@ -12,11 +12,15 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+        </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
@@ -62,7 +66,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleSall(record)">出售</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -87,10 +91,10 @@
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import MaterialModal from './modules/SallModal'
+  import MaterialModal from './modules/StorageModal'
 
   export default {
-    name: "SallList",
+    name: "StorageList",
     mixins:[JeecgListMixin],
     components: {
       MaterialModal
@@ -149,11 +153,65 @@
             title:'预设售价一',
             align:"center",
             dataIndex: 'presetpriceone'
-          },         
+          },
+          {
+            title:'是否组合',
+            align:"center",
+            dataIndex: 'combination'
+          },
+          {
+            title:'删除标记，0未删除，1删除',
+            align:"center",
+            dataIndex: 'deleteFlag'
+          },
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'创建人登录名称',
+            align:"center",
+            dataIndex: 'createBy'
+          },
+          {
+            title:'更新人登录名称',
+            align:"center",
+            dataIndex: 'updateBy'
+          },
+          {
+            title:'更新日期',
+            align:"center",
+            dataIndex: 'updateTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'所属部门',
+            align:"center",
+            dataIndex: 'sysOrgCode'
+          },
           {
             title:'实库',
             align:"center",
             dataIndex: 'realStorage'
+          },
+          {
+            title:'差异',
+            align:"center",
+            dataIndex: 'storageDiff'
+          },
+          {
+            title:'盘库时间',
+            align:"center",
+            dataIndex: 'checkTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
             title: '操作',
@@ -182,11 +240,6 @@
     },
     methods: {
       initDictConfig(){
-      },
-      handleSall(record) {
-        this.$refs.modalForm.edit(record);
-        this.$refs.modalForm.title = "商品出售";
-        this.$refs.modalForm.disableSubmit = false;
       }
     }
   }

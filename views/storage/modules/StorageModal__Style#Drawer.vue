@@ -80,7 +80,7 @@
   import JDate from '@/components/jeecg/JDate'  
   
   export default {
-    name: "SallModal",
+    name: "StorageModal",
     components: { 
       JDate,
     },
@@ -139,8 +139,8 @@
           ]},
         },
         url: {
-          add: "/sall/material/add",
-          edit: "/sall/material/edit",
+          add: "/storage/material/add",
+          edit: "/storage/material/edit",
         }
       }
     },

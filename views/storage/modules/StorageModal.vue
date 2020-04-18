@@ -1,12 +1,12 @@
 <template>
-  <a-drawer
+  <a-modal
     :title="title"
     :width="width"
-    placement="right"
-    :closable="false"
-    @close="close"
-    :visible="visible">
-  
+    :visible="visible"
+    :confirmLoading="confirmLoading"
+    @ok="handleOk"
+    @cancel="handleCancel"
+    cancelText="关闭">
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
@@ -64,12 +64,10 @@
         <a-form-item label="盘库时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-date placeholder="请选择盘库时间" v-decorator="[ 'checkTime', validatorRules.checkTime]" :trigger-change="true" style="width: 100%"/>
         </a-form-item>
-        
+
       </a-form>
     </a-spin>
-    <a-button type="primary" @click="handleOk">确定</a-button>
-    <a-button type="primary" @click="handleCancel">取消</a-button>
-  </a-drawer>
+  </a-modal>
 </template>
 
 <script>
@@ -78,9 +76,9 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
-  
+
   export default {
-    name: "SallModal",
+    name: "StorageModal",
     components: { 
       JDate,
     },
@@ -139,8 +137,8 @@
           ]},
         },
         url: {
-          add: "/sall/material/add",
-          edit: "/sall/material/edit",
+          add: "/storage/material/add",
+          edit: "/storage/material/edit",
         }
       }
     },
@@ -199,17 +197,9 @@
       },
       popupCallback(row){
         this.form.setFieldsValue(pick(row,'name','unit','remark','storage','cost','retailprice','lowprice','presetpriceone','combination','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','realStorage','storageDiff','checkTime'))
-      }
+      },
+
       
     }
   }
 </script>
-
-<style lang="less" scoped>
-/** Button按钮间距 */
-  .ant-btn {
-    margin-left: 30px;
-    margin-bottom: 30px;
-    float: right;
-  }
-</style>
