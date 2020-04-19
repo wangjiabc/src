@@ -12,15 +12,8 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('accountitem')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
@@ -72,11 +65,6 @@
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
             </a-menu>
           </a-dropdown>
         </span>
@@ -129,6 +117,16 @@
             align:"center",
             dataIndex: 'inoutitemid'
           },
+           {
+            title:'商品名称',
+            align:"center",
+            dataIndex: 'materialName'
+          },
+          {
+            title:'单据编号',
+            align:"center",
+            dataIndex: 'billno'
+          },
           {
             title:'单项金额',
             align:"center",
@@ -138,11 +136,6 @@
             title:'单据备注',
             align:"center",
             dataIndex: 'remark'
-          },
-          {
-            title:'删除标记，0未删除，1删除',
-            align:"center",
-            dataIndex: 'deleteFlag'
           },
           {
             title:'创建日期',
@@ -157,27 +150,7 @@
             align:"center",
             dataIndex: 'createBy'
           },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
+         
           {
             title: '操作',
             dataIndex: 'action',

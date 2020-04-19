@@ -43,6 +43,15 @@
         <a-form-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-date placeholder="请选择所属部门" v-decorator="[ 'sysOrgCode', validatorRules.sysOrgCode]" :trigger-change="true" style="width: 100%"/>
         </a-form-item>
+        <a-form-item label="商品id" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'materialId', validatorRules.materialId]" placeholder="请输入商品id" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'materialName', validatorRules.materialName]" placeholder="请输入商品名称"></a-input>
+        </a-form-item>
+        <a-form-item label="单据编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'billno', validatorRules.billno]" placeholder="请输入单据编号"></a-input>
+        </a-form-item>
         
       </a-form>
     </a-spin>
@@ -103,6 +112,12 @@
           ]},
           sysOrgCode: {rules: [
           ]},
+          materialId: {rules: [
+          ]},
+          materialName: {rules: [
+          ]},
+          billno: {rules: [
+          ]},
         },
         url: {
           add: "/accountitem/accountitem/add",
@@ -121,7 +136,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'headerid','accountid','inoutitemid','eachamount','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode'))
+          this.form.setFieldsValue(pick(this.model,'headerid','accountid','inoutitemid','eachamount','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','materialId','materialName','billno'))
         })
       },
       close () {
@@ -164,7 +179,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'headerid','accountid','inoutitemid','eachamount','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode'))
+        this.form.setFieldsValue(pick(row,'headerid','accountid','inoutitemid','eachamount','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','materialId','materialName','billno'))
       }
       
     }

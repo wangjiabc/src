@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-             <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
+
         </a-row>
       </a-form>
     </div>
@@ -12,11 +12,15 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('supplier')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+        </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
@@ -38,7 +42,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        :scroll="tableScroll"
+        
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -62,7 +66,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleSall(record)">出售</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -73,9 +77,6 @@
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
-              <a-menu-item title="详情" @click="detail(record.id)">
-                <a>详情</a>
-              </a-menu-item>
             </a-menu>
           </a-dropdown>
         </span>
@@ -83,34 +84,24 @@
       </a-table>
     </div>
 
-    <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
+    <supplier-modal ref="modalForm" @ok="modalFormOk"></supplier-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import MaterialModal from './modules/SallModal'
-  import JInput from '@/components/jeecg/JInput.vue';
-  import { colAuthFilter } from "@/utils/authFilter"
-  import {getAction} from '@/api/manage'
+  import SupplierModal from './modules/SupplierModal'
 
   export default {
-    name: "SallList",
+    name: "SupplierList",
     mixins:[JeecgListMixin],
     components: {
-      MaterialModal,
-      JInput
+      SupplierModal
     },
-    created() {
-          this.disableMixinCreated=true;
-          this.columns = colAuthFilter(this.columns,'materialList:');
-          this.loadData();
-          this.initDictConfig();
-     },
     data () {
       return {
-        description: 'material管理页面',
+        description: 'supplier管理页面',
         // 表头
         columns: [
           {
@@ -124,84 +115,156 @@
             }
           },
           {
-            title:'名称',
+            title:'供应商名称',
             align:"center",
-            dataIndex: 'name',
-            width:100
+            dataIndex: 'supplier'
           },
           {
-            title:'单位-单个',
+            title:'联系人',
             align:"center",
-            dataIndex: 'unit',
-            width:80
+            dataIndex: 'contacts'
+          },
+          {
+            title:'联系电话',
+            align:"center",
+            dataIndex: 'phonenum'
+          },
+          {
+            title:'电子邮箱',
+            align:"center",
+            dataIndex: 'email'
           },
           {
             title:'备注',
             align:"center",
-            dataIndex: 'remark',
-            width:80
+            dataIndex: 'description'
           },
           {
-            title:'库存',
+            title:'是否系统自带 0==系统 1==非系统',
             align:"center",
-            dataIndex: 'storage',
-            width:100
+            dataIndex: 'isystem'
           },
           {
-            title:'成本',
+            title:'类型',
             align:"center",
-            dataIndex: 'cost',
-            width:80
+            dataIndex: 'type'
           },
           {
-            title:'零售价',
+            title:'启用',
             align:"center",
-            dataIndex: 'retailprice',
-            width:80
+            dataIndex: 'enabled'
           },
           {
-            title:'最低售价',
+            title:'预收款',
             align:"center",
-            dataIndex: 'lowprice',
-            width:80
+            dataIndex: 'advancein'
           },
           {
-            title:'预设售价一',
+            title:'期初应收',
             align:"center",
-            dataIndex: 'presetpriceone',
-            width:80
+            dataIndex: 'beginneedget'
           },
           {
-            title:'组合',
+            title:'期初应付',
             align:"center",
-            dataIndex: 'combination',
-            width:50
-          },            
+            dataIndex: 'beginneedpay'
+          },
           {
-            title:'实库',
+            title:'累计应收',
             align:"center",
-            dataIndex: 'realStorage',
-            width:100
+            dataIndex: 'allneedget'
+          },
+          {
+            title:'累计应付',
+            align:"center",
+            dataIndex: 'allneedpay'
+          },
+          {
+            title:'传真',
+            align:"center",
+            dataIndex: 'fax'
+          },
+          {
+            title:'手机',
+            align:"center",
+            dataIndex: 'telephone'
+          },
+          {
+            title:'地址',
+            align:"center",
+            dataIndex: 'address'
+          },
+          {
+            title:'纳税人识别号',
+            align:"center",
+            dataIndex: 'taxnum'
+          },
+          {
+            title:'开户行',
+            align:"center",
+            dataIndex: 'bankname'
+          },
+          {
+            title:'账号',
+            align:"center",
+            dataIndex: 'accountnumber'
+          },
+          {
+            title:'税率',
+            align:"center",
+            dataIndex: 'taxrate'
+          },
+          {
+            title:'删除标记，0未删除，1删除',
+            align:"center",
+            dataIndex: 'deleteFlag'
+          },
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'创建人登录名称',
+            align:"center",
+            dataIndex: 'createBy'
+          },
+          {
+            title:'更新人登录名称',
+            align:"center",
+            dataIndex: 'updateBy'
+          },
+          {
+            title:'更新日期',
+            align:"center",
+            dataIndex: 'updateTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'所属部门',
+            align:"center",
+            dataIndex: 'sysOrgCode'
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            fixed:"right",
-            width:147,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/food/material/list",
-          delete: "/food/material/delete",
-          deleteBatch: "/food/material/deleteBatch",
-          exportXlsUrl: "/food/material/exportXls",
-          importExcelUrl: "food/material/importExcel",
-          querydDetailByIdUrl: "food/material/querydDetailById"
+          list: "/supplier/supplier/list",
+          delete: "/supplier/supplier/delete",
+          deleteBatch: "/supplier/supplier/deleteBatch",
+          exportXlsUrl: "/supplier/supplier/exportXls",
+          importExcelUrl: "supplier/supplier/importExcel",
         },
         dictOptions:{},
-        tableScroll:{x :10*100+50}
       }
     },
     computed: {
@@ -211,28 +274,7 @@
     },
     methods: {
       initDictConfig(){
-      },
-      handleSall(record) {
-        this.$refs.modalForm.edit(record);
-        this.$refs.modalForm.title = "商品出售";
-        this.$refs.modalForm.disableSubmit = false;
-      },
-       detail(record){
-              console.log(record);
-            var that = this;
-             getAction(that.url.querydDetailByIdUrl, {id:record}).then((res) => {
-              if (res.success) {
-                  var html="";
-                  res.result.findIndex( r=> {
-                    console.log(r);
-                     html+="商品："+r.name+"  数量："+r.unit+"\n";
-                  });
-                  alert(html);
-                }
-              });
-              
-
-        }
+      }
     }
   }
 </script>
