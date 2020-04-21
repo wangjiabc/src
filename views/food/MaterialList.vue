@@ -17,6 +17,7 @@
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
+      <a-button type="primary" icon="plus" @click="batchCompages">组合</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" v-has="'material:storageAdd'" @click="handleStorageAdd"><a-icon type="plus"/>添加库存</a-menu-item>
@@ -104,8 +105,12 @@
                 <li style="display: inline-block">商品名称：{{item.name}}</li>
                 <li style="display: inline-block">　数量：</li>
                 <input style="display: inline-block" type="text"  v-model="item.number">
+                <Button style="display: inline-block" @click="delCompages(item.id)" >删除</Button>
                 </div>
               </template>
+              <div>
+               <Button @click="addCompages()">添加</Button>
+              </div>
               <div slot="footer">
     	            <Button @click="hideModel()">关闭</Button>
                   <Button type="primary" @click="save">保存</Button>
@@ -197,19 +202,7 @@
             align:"center",
             dataIndex: 'name',
             width:100
-          },
-          {
-            title:'单位-单个',
-            align:"center",
-            dataIndex: 'unit',
-            width:80
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark',
-            width:80
-          },
+          },          
           {
             title:'库存',
             align:"center",
@@ -229,6 +222,12 @@
             width:80
           },
           {
+            title:'备注',
+            align:"center",
+            dataIndex: 'remark',
+            width:80
+          },
+         /* {
             title:'最低售价',
             align:"center",
             dataIndex: 'lowprice',
@@ -239,7 +238,7 @@
             align:"center",
             dataIndex: 'presetpriceone',
             width:80
-          },
+          },*/
           {
             title:'组合',
             align:"center",
@@ -317,7 +316,7 @@
           querydDetailByIdUrl: "food/material/querydDetailById"
         },
         dictOptions:{},
-        tableScroll:{x :10*100+50}
+        tableScroll:{x :10*80+50}
       }
     },
     computed: {
@@ -459,6 +458,12 @@
               });
               
 
+        },
+      　addCompages(){
+
+        },
+        delCompages(id){
+            alert(id);
         }
     }
   }
