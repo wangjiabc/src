@@ -69,7 +69,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="newHandleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -92,7 +92,7 @@
 
     <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
 
-        <a-row :gutter="24">
+    <a-row :gutter="24">
           <a-col>
             <j-modal
               :visible.sync="modal.visible"
@@ -117,9 +117,40 @@
               </div>
             </j-modal>
           </a-col>
-        </a-row>
+    </a-row>
 
-        <a-row :gutter="24">
+    <a-row :gutter="24">
+          <a-col>
+            <j-modal
+              :visible.sync="modal3.visible"
+              :width="1200"
+              :title="modal3.title"
+              :fullscreen.sync="modal3.fullscreen"
+            >
+
+            <a-table
+                ref="table"
+              size="middle"
+                bordered
+                rowKey="id"
+                :columns="columns"
+                :dataSource="dataSource"
+                :pagination="ipagination"
+                :loading="loading"
+                :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                :scroll="tableScroll"
+                @change="handleTableChange">
+              </a-table> 
+
+            <div slot="footer">
+    	            <Button @click="hideModel3()">关闭</Button>
+                  <Button type="primary" @click="addCompagesSave()">确定</Button>
+            </div>
+            </j-modal>
+          </a-col>
+     </a-row>
+
+    <a-row :gutter="24">
           <a-col>
             <j-modal
               :visible.sync="modal2.visible"
@@ -142,7 +173,9 @@
               </div>
             </j-modal>
           </a-col>
-        </a-row>
+     </a-row>
+
+      
 
   </a-card>
 
@@ -175,6 +208,7 @@
     data () {
       return {       
         items: [],
+        cmpagesItems:[], //为编辑保存旧变量，否则选择后原来的items的元素就消失
         description: 'material管理页面',
         // 表头
         dialogVisible: false,
@@ -183,6 +217,10 @@
           fullscreen: false,
         },
         modal2: {
+          visible: false,
+          fullscreen: false,
+        },
+        modal3: {
           visible: false,
           fullscreen: false,
         },
@@ -227,18 +265,6 @@
             dataIndex: 'remark',
             width:80
           },
-         /* {
-            title:'最低售价',
-            align:"center",
-            dataIndex: 'lowprice',
-            width:80
-          },
-          {
-            title:'预设售价一',
-            align:"center",
-            dataIndex: 'presetpriceone',
-            width:80
-          },*/
           {
             title:'组合',
             align:"center",
@@ -253,48 +279,7 @@
               return !text?"":(text.length>10?text.substr(0,10):text)
             },
             width:100
-          },
-         /* {
-            title:'创建人登录名称',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode'
-          },
-          {
-            title:'实库',
-            align:"center",
-            dataIndex: 'realStorage'
-          },
-          {
-            title:'差异',
-            align:"center",
-            dataIndex: 'storageDiff'
-          },
-          {
-            title:'盘库时间',
-            align:"center",
-            dataIndex: 'checkTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },*/
+          },        
           {
             title: '操作',
             dataIndex: 'action',
@@ -313,7 +298,8 @@
           compagesUrl: "food/material/compages",
           queryByIdsUrl: "food/material/queryByIds",
           storageAddUrl: "food/material/storageAdd",
-          querydDetailByIdUrl: "food/material/querydDetailById"
+          querydDetailByIdUrl: "food/material/querydDetailById",
+          queryByMaterialCompagesIdUrl: "/compages/materialCompages/queryByMaterialCompagesId"
         },
         dictOptions:{},
         tableScroll:{x :10*80+50}
@@ -331,6 +317,7 @@
           this.modal.title="组合商品";
           this.modal.visible=true;
           this.items=[];
+          this.cmpagesItems=[];
           var ids = "";
           for (var a = 0; a < this.selectedRowKeys.length; a++) {
             ids += this.selectedRowKeys[a] + ",";
@@ -351,6 +338,9 @@
       },
       hideModel(){
         this.modal.visible=false;
+        this.cmpagesItems.findIndex( r=> {
+                this.items.push(r);
+         });
       },
       save(rows){
          var that = this;
@@ -421,10 +411,14 @@
       hideModel2(){
         this.modal2.visible=false;
       },
+      hideModel3(){
+        this.modal3.visible=false;
+      },
       handleStorageAdd(){
           this.modal2.title="添加库存";
           this.modal2.visible=true;
           this.items=[];
+          this.cmpagesItems=[];
           var ids = "";
           for (var a = 0; a < this.selectedRowKeys.length; a++) {
             ids += this.selectedRowKeys[a] + ",";
@@ -460,10 +454,74 @@
 
         },
       　addCompages(){
+            this.modal3.title="组合商品";
+            this.modal3.visible=true;
+            this.items=[];
+        },
+        addCompagesSave(){
 
+              this.modal3.visible=false;
+              var ids = "";
+              for (var a = 0; a < this.selectedRowKeys.length; a++) {
+                    ids += this.selectedRowKeys[a] + ",";
+              }
+              var that = this;
+              getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+              if (res.success) {
+                    res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.number= 1;
+                    this.items.push(item);
+                  })
+                }
+              });
+              console.log(this.items);
+              console.log(this.cmpagesItems);
+              this.cmpagesItems.findIndex( r=> {
+                this.items.push(r);
+              });
+              console.log(this.items);
+              
         },
         delCompages(id){
-            alert(id);
+            var index = this.items.findIndex(item =>{
+　　　　　　　　　　if(item.id==id){
+　　　　　　　　　　　　return true
+　　　　　　　　　　}
+　　　　　　　　})
+　　　　　　　this.items.splice(index,1);
+        },
+        newHandleEdit: function (record) {
+          if(record.combination!=1){
+            this.$nextTick(()=>{
+              setTimeout(() => {
+                this.$refs.modalForm.edit(record);
+                this.$refs.modalForm.title = "编辑";
+                this.$refs.modalForm.disableSubmit = false;
+              })
+            });
+          }else{
+              this.modal.title="组合商品";
+              this.modal.visible=true;
+              this.items=[];
+              this.cmpagesItems=[];
+              getAction(this.url.queryByMaterialCompagesIdUrl, {mCompagesId: record.id}).then((res) => {
+              if (res.success) {
+                    console.log(res.result);
+                    res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.id=r.ID;
+                      item.name = r.NAME;
+                      item.number= r.AMOUNT;
+                    this.items.push(item);
+                    this.cmpagesItems.push(item);
+                  })
+                }
+              });
+          }
+
         }
     }
   }
