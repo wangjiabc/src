@@ -209,6 +209,7 @@
       return {       
         items: [],
         cmpagesItems:[], //为编辑保存旧变量，否则选择后原来的items的元素就消失
+        compagesId:null,
         description: 'material管理页面',
         // 表头
         dialogVisible: false,
@@ -362,16 +363,19 @@
 
           var Url=this.url.compagesUrl;
     
-          getAction(Url, {items:formData}).then((res) => {
+          getAction(Url, {items:formData,compagesId:this.compagesId}).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
                 that.loadData();
                 that.onClearSelected();
+                this.compagesId=null;
               } else {
                 that.$message.warning(res.message);
+                this.compagesId=null;
               }
           }).finally(() => {
               that.loading = false;
+              this.compagesId=null;
           });
 
          },
@@ -507,6 +511,7 @@
               this.modal.visible=true;
               this.items=[];
               this.cmpagesItems=[];
+              this.compagesId=record.id;
               getAction(this.url.queryByMaterialCompagesIdUrl, {mCompagesId: record.id}).then((res) => {
               if (res.success) {
                     console.log(res.result);
