@@ -69,8 +69,9 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
+          <a v-has="'material:storageAdd'" @click="handleStorageAdd2(record)">添加库存</a>
+          <a-divider type="vertical" />
           <a @click="newHandleEdit(record)">编辑</a>
-
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -160,7 +161,9 @@
             >
               <template v-for="item in items">
                 <div >
-                <li style="display: inline-block">商品名称：{{item.name}}</li>               
+                <li style="display: inline-block">商品名称：{{item.name}}</li>   
+                <li style="display: inline-block">成本：</li>  
+                <input style="display: inline-block" type="text"  v-model="item.cost">          
                 </div>                
               </template>
               <template>
@@ -286,7 +289,7 @@
             dataIndex: 'action',
             align:"center",
             fixed:"right",
-            width:147,
+            width:230,
             scopedSlots: { customRender: 'action' }
           }
         ],
@@ -434,6 +437,31 @@
                     var item = new Object();
                       item.id=r.id;
                       item.name = r.name;
+                      item.cost=Number(r.cost);
+                      item.combination=r.combination;
+                      item.number= 1;
+                    this.items.push(item);
+                  })
+                }
+          });
+
+        },
+        handleStorageAdd2(record){
+          this.modal2.title="添加库存";
+          this.modal2.visible=true;
+          this.items=[];
+          this.cmpagesItems=[];
+          var ids = "";
+          ids += record.id + ",";
+          var that = this;
+          getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.cost=Number(r.cost);
+                      item.combination=r.combination;
                       item.number= 1;
                     this.items.push(item);
                   })

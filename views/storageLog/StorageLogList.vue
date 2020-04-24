@@ -13,7 +13,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('storage')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -42,7 +42,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        :scroll="tableScroll"
+        
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -84,24 +84,24 @@
       </a-table>
     </div>
 
-    <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
+    <storageLog-modal ref="modalForm" @ok="modalFormOk"></storageLog-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import MaterialModal from './modules/StorageModal'
+  import StorageLogModal from './modules/StorageLogModal'
 
   export default {
-    name: "StorageList",
+    name: "StorageLogList",
     mixins:[JeecgListMixin],
     components: {
-      MaterialModal
+      StorageLogModal
     },
     data () {
       return {
-        description: 'material管理页面',
+        description: 'storage管理页面',
         // 表头
         columns: [
           {
@@ -115,24 +115,9 @@
             }
           },
           {
-            title:'名称',
+            title:'商品名称',
             align:"center",
             dataIndex: 'name'
-          },
-          {
-            title:'单位-单个',
-            align:"center",
-            dataIndex: 'unit'
-          },
-          {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark'
-          },
-          {
-            title:'库存',
-            align:"center",
-            dataIndex: 'storage'
           },
           {
             title:'成本',
@@ -140,29 +125,14 @@
             dataIndex: 'cost'
           },
           {
-            title:'零售价',
+            title:'进货库存',
             align:"center",
-            dataIndex: 'retailprice'
-          },
+            dataIndex: 'stockStorage'
+          },         
           {
-            title:'最低售价',
+            title:'当前库存',
             align:"center",
-            dataIndex: 'lowprice'
-          },
-          {
-            title:'预设售价一',
-            align:"center",
-            dataIndex: 'presetpriceone'
-          },
-          {
-            title:'是否组合',
-            align:"center",
-            dataIndex: 'combination'
-          },
-          {
-            title:'删除标记，0未删除，1删除',
-            align:"center",
-            dataIndex: 'deleteFlag'
+            dataIndex: 'currentStorage'
           },
           {
             title:'创建日期',
@@ -170,67 +140,24 @@
             dataIndex: 'createTime',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'创建人登录名称',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode'
-          },
-          {
-            title:'实库',
-            align:"center",
-            dataIndex: 'realStorage'
-          },
-          {
-            title:'差异',
-            align:"center",
-            dataIndex: 'storageDiff'
-          },
-          {
-            title:'盘库时间',
-            align:"center",
-            dataIndex: 'checkTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            },
+            width:100
           },
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            fixed:"right",
-            width:147,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/food/material/list",
-          delete: "/food/material/delete",
-          deleteBatch: "/food/material/deleteBatch",
-          exportXlsUrl: "/food/material/exportXls",
-          importExcelUrl: "food/material/importExcel",
+          list: "/storageLog/storageLog/list",
+          delete: "/storageLog/storageLog/delete",
+          deleteBatch: "/storageLog/storageLog/deleteBatch",
+          exportXlsUrl: "/storageLog/storageLog/exportXls",
+          importExcelUrl: "storageLog/storageLog/importExcel",
         },
         dictOptions:{},
-        tableScroll:{x :18*147+50}
       }
     },
     computed: {
