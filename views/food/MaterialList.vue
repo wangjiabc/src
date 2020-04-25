@@ -372,6 +372,7 @@
                 that.loadData();
                 that.onClearSelected();
                 this.compagesId=null;
+                this.modal.visible=false;
               } else {
                 that.$message.warning(res.message);
                 this.compagesId=null;
@@ -379,9 +380,10 @@
           }).finally(() => {
               that.loading = false;
               this.compagesId=null;
+              this.modal.visible=false;
           });
 
-         },
+      },
       save2(rows){
          var that = this;
          var arr=this.items;
@@ -407,11 +409,13 @@
                 that.$message.success(res.message);
                 that.loadData();
                 that.onClearSelected();
+                this.modal2.visible=false;
               } else {
                 that.$message.warning(res.message);
               }
           }).finally(() => {
               that.loading = false;
+              this.modal2.visible=false;
           });
 
       },

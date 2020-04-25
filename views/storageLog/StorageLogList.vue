@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-
+            <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -92,12 +92,14 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import StorageLogModal from './modules/StorageLogModal'
+  import JInput from '@/components/jeecg/JInput.vue';
 
   export default {
     name: "StorageLogList",
     mixins:[JeecgListMixin],
     components: {
-      StorageLogModal
+      StorageLogModal,
+      JInput
     },
     data () {
       return {

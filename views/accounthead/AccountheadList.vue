@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-
+          <j-input placeholder="请输入账号模糊查询" v-model="queryParam.detail"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -12,11 +12,7 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('accounthead')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -92,12 +88,14 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import AccountheadModal from './modules/AccountheadModal'
+  import JInput from '@/components/jeecg/JInput.vue';
 
   export default {
     name: "AccountheadList",
     mixins:[JeecgListMixin],
     components: {
-      AccountheadModal
+      AccountheadModal,
+      JInput
     },
     data () {
       return {
@@ -125,9 +123,9 @@
             dataIndex: 'organid'
           },
           {
-            title:'经手人Id',
+            title:'详情',
             align:"center",
-            dataIndex: 'handspersonid'
+            dataIndex: 'detail'
           },
           {
             title:'变动金额(优惠/收款/付款/实付)',

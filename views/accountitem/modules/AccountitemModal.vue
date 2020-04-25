@@ -16,12 +16,6 @@
         <a-form-item label="账户Id" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'accountid', validatorRules.accountid]" placeholder="请输入账户Id" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'materialName', validatorRules.materialName]" placeholder="请输入商品名称"></a-input>
-        </a-form-item>
-        <a-form-item label="单据编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'billno', validatorRules.billno]" placeholder="请输入单据编号"></a-input>
-        </a-form-item>
         <a-form-item label="收支项目Id" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'inoutitemid', validatorRules.inoutitemid]" placeholder="请输入收支项目Id" style="width: 100%"/>
         </a-form-item>
@@ -31,13 +25,33 @@
         <a-form-item label="单据备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'remark', validatorRules.remark]" placeholder="请输入单据备注"></a-input>
         </a-form-item>
+        <a-form-item label="删除标记，0未删除，1删除" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'deleteFlag', validatorRules.deleteFlag]" placeholder="请输入删除标记，0未删除，1删除"></a-input>
+        </a-form-item>
         <a-form-item label="创建日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-date placeholder="请选择创建日期" v-decorator="[ 'createTime', validatorRules.createTime]" :trigger-change="true" style="width: 100%"/>
         </a-form-item>
         <a-form-item label="创建人登录名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'createBy', validatorRules.createBy]" placeholder="请输入创建人登录名称"></a-input>
         </a-form-item>
-        
+        <a-form-item label="更新人登录名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'updateBy', validatorRules.updateBy]" placeholder="请输入更新人登录名称"></a-input>
+        </a-form-item>
+        <a-form-item label="更新日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-date placeholder="请选择更新日期" v-decorator="[ 'updateTime', validatorRules.updateTime]" :trigger-change="true" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-date placeholder="请选择所属部门" v-decorator="[ 'sysOrgCode', validatorRules.sysOrgCode]" :trigger-change="true" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="商品id" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'materialId', validatorRules.materialId]" placeholder="请输入商品id" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'materialName', validatorRules.materialName]" placeholder="请输入商品名称"></a-input>
+        </a-form-item>
+        <a-form-item label="单据编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'billno', validatorRules.billno]" placeholder="请输入单据编号"></a-input>
+        </a-form-item>
 
       </a-form>
     </a-spin>
