@@ -70,19 +70,22 @@
 
         <span slot="action" slot-scope="text, record">
           <a v-has="'material:storageAdd'" @click="handleStorageAdd2(record)">添加库存</a>
-          <a-divider type="vertical" />
+           <a-divider type="vertical" />
+           <a @click="detail(record.id)">详情</a>
+           <a-divider type="vertical" />
+        <!--  <a-divider type="vertical" />
           <a @click="newHandleEdit(record)">编辑</a>
-          <a-divider type="vertical" />
+          <a-divider type="vertical" />-->
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
+               <a-menu-item title="编辑" @click="newHandleEdit(record)">
+                <a>编辑</a>
+              </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item title="详情" @click="detail(record.id)">
-                <a>详情</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -289,12 +292,12 @@
             dataIndex: 'action',
             align:"center",
             fixed:"right",
-            width:230,
+            width:260,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/food/material/list",
+          list: "/food/material/list?column=storage&order=asc",
           delete: "/food/material/delete",
           deleteBatch: "/food/material/deleteBatch",
           exportXlsUrl: "/food/material/exportXls",
@@ -481,7 +484,7 @@
                   var html="";
                   res.result.findIndex( r=> {
                     console.log(r);
-                     html+="商品："+r.name+"  数量："+r.unit+"\n";
+                     html+="商品："+r.name+"  数量："+r.unit+"  库存："+r.storage+"\n";
                   });
                   alert(html);
                 }

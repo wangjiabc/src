@@ -13,58 +13,52 @@
         <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'name', validatorRules.name]" placeholder="请输入名称"></a-input>
         </a-form-item>
-         <a-form-item label="成本" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'cost', validatorRules.cost]" placeholder="请输入成本" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="零售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'retailprice', validatorRules.retailprice]" placeholder="请输入零售价" style="width: 100%"/>
-        </a-form-item>
         <a-form-item label="单位-单个" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'unit', validatorRules.unit]" placeholder="请输入单位-单个"></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'remark', validatorRules.remark]" placeholder="请输入备注"></a-input>
         </a-form-item>
-       <!-- <a-form-item label="最低售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="库存" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'storage', validatorRules.storage]" placeholder="请输入库存" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="零售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'retailprice', validatorRules.retailprice]" placeholder="请输入零售价" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="最低售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'lowprice', validatorRules.lowprice]" placeholder="请输入最低售价" style="width: 100%"/>
         </a-form-item>
         <a-form-item label="预设售价一" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'presetpriceone', validatorRules.presetpriceone]" placeholder="请输入预设售价一" style="width: 100%"/>
-        </a-form-item>
-      <a-form-item label="库存" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'storage', validatorRules.storage]" placeholder="请输入库存" style="width: 100%"/>
-        </a-form-item>
+        </a-form-item>        
         <a-form-item label="实库" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'realStorage', validatorRules.realStorage]" placeholder="请输入实库" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="差异" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'storageDiff', validatorRules.storageDiff]" placeholder="请输入差异" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="盘库时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择盘库时间" v-decorator="[ 'checkTime', validatorRules.checkTime]" :trigger-change="true" style="width: 100%"/>
-        </a-form-item>-->
-
       </a-form>
     </a-spin>
+    <div>
+      <li style="display: inline-block">　数量：</li>
+      <input style="display: inline-block" id="aaa" type="text" value="1"/>
+    </div>
   </a-modal>
 </template>
 
 <script>
 
-  import { httpAction } from '@/api/manage'
+  import { getAction,httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
 
   export default {
-    name: "MaterialModal",
+    name: "SaleModal",
     components: { 
       JDate,
     },
     data () {
       return {
         form: this.$form.createForm(this),
-        title:"操作",
+        title:"销售出货",
         width:800,
         visible: false,
         model: {},
@@ -116,8 +110,7 @@
           ]},
         },
         url: {
-          add: "/food/material/add",
-          edit: "/food/material/edit",
+          sale: "/food/material/sale",
         }
       }
     },
@@ -145,18 +138,13 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             that.confirmLoading = true;
-            let httpurl = '';
-            let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
-              method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
-            }
             let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
-            httpAction(httpurl,formData,method).then((res)=>{
+            console.log("表单提交数据",formData.id)
+            var id=formData.id;
+            var retailprice=formData.retailprice;
+            var number=document.getElementById("aaa").value
+            console.log(retailprice+"   "+number);
+            getAction(this.url.sale,{id:id,retailprice:retailprice,number:number}).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');

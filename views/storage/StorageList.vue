@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-
+            <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -12,11 +12,7 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -92,13 +88,22 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import MaterialModal from './modules/StorageModal'
+  import JInput from '@/components/jeecg/JInput.vue';
+  import { colAuthFilter } from "@/utils/authFilter";
 
   export default {
     name: "StorageList",
     mixins:[JeecgListMixin],
     components: {
-      MaterialModal
+      MaterialModal,
+      JInput
     },
+    created() {
+          this.disableMixinCreated=true;
+          this.columns = colAuthFilter(this.columns,'materialList:');
+          this.loadData();
+          this.initDictConfig();
+     },
     data () {
       return {
         description: 'material管理页面',
@@ -125,77 +130,11 @@
             dataIndex: 'unit'
           },
           {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark'
-          },
-          {
             title:'库存',
             align:"center",
             dataIndex: 'storage'
           },
-          {
-            title:'成本',
-            align:"center",
-            dataIndex: 'cost'
-          },
-          {
-            title:'零售价',
-            align:"center",
-            dataIndex: 'retailprice'
-          },
-          {
-            title:'最低售价',
-            align:"center",
-            dataIndex: 'lowprice'
-          },
-          {
-            title:'预设售价一',
-            align:"center",
-            dataIndex: 'presetpriceone'
-          },
-          {
-            title:'是否组合',
-            align:"center",
-            dataIndex: 'combination'
-          },
-          {
-            title:'删除标记，0未删除，1删除',
-            align:"center",
-            dataIndex: 'deleteFlag'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'创建人登录名称',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode'
-          },
-          {
+                    {
             title:'实库',
             align:"center",
             dataIndex: 'realStorage'
@@ -214,6 +153,34 @@
             }
           },
           {
+            title:'成本',
+            align:"center",
+            dataIndex: 'cost'
+          },
+          {
+            title:'零售价',
+            align:"center",
+            dataIndex: 'retailprice'
+          },        
+          {
+            title:'是否组合',
+            align:"center",
+            dataIndex: 'combination'
+          },       
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },        
+          {
+            title:'备注',
+            align:"center",
+            dataIndex: 'remark'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
@@ -223,14 +190,14 @@
           }
         ],
         url: {
-          list: "/food/material/list",
+          list: "/food/material/list?column=storage&order=asc",
           delete: "/food/material/delete",
           deleteBatch: "/food/material/deleteBatch",
           exportXlsUrl: "/food/material/exportXls",
           importExcelUrl: "food/material/importExcel",
         },
         dictOptions:{},
-        tableScroll:{x :18*147+50}
+        tableScroll:{x :18*80+50}
       }
     },
     computed: {

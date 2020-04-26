@@ -1,41 +1,41 @@
 <template>
-  <a-modal
+  <a-drawer
     :title="title"
     :width="width"
-    :visible="visible"
-    :confirmLoading="confirmLoading"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    cancelText="关闭">
+    placement="right"
+    :closable="false"
+    @close="close"
+    :visible="visible">
+  
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="类型(支出/收入/收款/付款/转账)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'type', validatorRules.type]" placeholder="请输入类型(支出/收入/收款/付款/转账)"></a-input>
+        <a-form-item label="名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'name', validatorRules.name]" placeholder="请输入名称"></a-input>
         </a-form-item>
-        <a-form-item label="单位Id(收款/付款单位)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'organid', validatorRules.organid]" placeholder="请输入单位Id(收款/付款单位)" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="经手人Id" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'handspersonid', validatorRules.handspersonid]" placeholder="请输入经手人Id" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="变动金额(优惠/收款/付款/实付)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'changeamount', validatorRules.changeamount]" placeholder="请输入变动金额(优惠/收款/付款/实付)" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="合计金额" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'totalprice', validatorRules.totalprice]" placeholder="请输入合计金额" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="账户(收款/付款)" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'accountid', validatorRules.accountid]" placeholder="请输入账户(收款/付款)" style="width: 100%"/>
-        </a-form-item>
-        <a-form-item label="单据编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'billno', validatorRules.billno]" placeholder="请输入单据编号"></a-input>
-        </a-form-item>
-        <a-form-item label="单据日期" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择单据日期" v-decorator="[ 'billtime', validatorRules.billtime]" :trigger-change="true" style="width: 100%"/>
+        <a-form-item label="单位-单个" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'unit', validatorRules.unit]" placeholder="请输入单位-单个"></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'remark', validatorRules.remark]" placeholder="请输入备注"></a-input>
+        </a-form-item>
+        <a-form-item label="库存" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'storage', validatorRules.storage]" placeholder="请输入库存" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="成本" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'cost', validatorRules.cost]" placeholder="请输入成本" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="零售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'retailprice', validatorRules.retailprice]" placeholder="请输入零售价" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="最低售价" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'lowprice', validatorRules.lowprice]" placeholder="请输入最低售价" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="预设售价一" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'presetpriceone', validatorRules.presetpriceone]" placeholder="请输入预设售价一" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="是否组合" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'combination', validatorRules.combination]" placeholder="请输入是否组合" style="width: 100%"/>
         </a-form-item>
         <a-form-item label="删除标记，0未删除，1删除" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'deleteFlag', validatorRules.deleteFlag]" placeholder="请输入删除标记，0未删除，1删除"></a-input>
@@ -55,25 +55,21 @@
         <a-form-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'sysOrgCode', validatorRules.sysOrgCode]" placeholder="请输入所属部门"></a-input>
         </a-form-item>
-        <a-form-item label="供应商id" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'supplierId', validatorRules.supplierId]" placeholder="请输入供应商id" style="width: 100%"/>
+        <a-form-item label="实库" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'realStorage', validatorRules.realStorage]" placeholder="请输入实库" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="供应商名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'supplier', validatorRules.supplier]" placeholder="请输入供应商名称"></a-input>
+        <a-form-item label="差异" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'storageDiff', validatorRules.storageDiff]" placeholder="请输入差异" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="支付方式名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'payName', validatorRules.payName]" placeholder="请输入支付方式名称"></a-input>
+        <a-form-item label="盘库时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-date placeholder="请选择盘库时间" v-decorator="[ 'checkTime', validatorRules.checkTime]" :trigger-change="true" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="支付方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'payType', validatorRules.payType]" placeholder="请输入支付方式"></a-input>
-        </a-form-item>
-        <a-form-item label="详情" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'detail', validatorRules.detail]" placeholder="请输入详情"></a-input>
-        </a-form-item>
-
+        
       </a-form>
     </a-spin>
-  </a-modal>
+    <a-button type="primary" @click="handleOk">确定</a-button>
+    <a-button type="primary" @click="handleCancel">取消</a-button>
+  </a-drawer>
 </template>
 
 <script>
@@ -82,9 +78,9 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
-
+  
   export default {
-    name: "AccountheadModal",
+    name: "SaleModal",
     components: { 
       JDate,
     },
@@ -105,23 +101,23 @@
         },
         confirmLoading: false,
         validatorRules: {
-          type: {rules: [
+          name: {rules: [
           ]},
-          organid: {rules: [
-          ]},
-          handspersonid: {rules: [
-          ]},
-          changeamount: {rules: [
-          ]},
-          totalprice: {rules: [
-          ]},
-          accountid: {rules: [
-          ]},
-          billno: {rules: [
-          ]},
-          billtime: {rules: [
+          unit: {rules: [
           ]},
           remark: {rules: [
+          ]},
+          storage: {rules: [
+          ]},
+          cost: {rules: [
+          ]},
+          retailprice: {rules: [
+          ]},
+          lowprice: {rules: [
+          ]},
+          presetpriceone: {rules: [
+          ]},
+          combination: {rules: [
           ]},
           deleteFlag: {rules: [
           ]},
@@ -135,20 +131,16 @@
           ]},
           sysOrgCode: {rules: [
           ]},
-          supplierId: {rules: [
+          realStorage: {rules: [
           ]},
-          supplier: {rules: [
+          storageDiff: {rules: [
           ]},
-          payName: {rules: [
-          ]},
-          payType: {rules: [
-          ]},
-          detail: {rules: [
+          checkTime: {rules: [
           ]},
         },
         url: {
-          add: "/accounthead/accounthead/add",
-          edit: "/accounthead/accounthead/edit",
+          add: "/sale/material/add",
+          edit: "/sale/material/edit",
         }
       }
     },
@@ -163,7 +155,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','supplierId','supplier','payName','payType','detail'))
+          this.form.setFieldsValue(pick(this.model,'name','unit','remark','storage','cost','retailprice','lowprice','presetpriceone','combination','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','realStorage','storageDiff','checkTime'))
         })
       },
       close () {
@@ -206,10 +198,18 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','supplierId','supplier','payName','payType','detail'))
-      },
-
+        this.form.setFieldsValue(pick(row,'name','unit','remark','storage','cost','retailprice','lowprice','presetpriceone','combination','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','realStorage','storageDiff','checkTime'))
+      }
       
     }
   }
 </script>
+
+<style lang="less" scoped>
+/** Button按钮间距 */
+  .ant-btn {
+    margin-left: 30px;
+    margin-bottom: 30px;
+    float: right;
+  }
+</style>

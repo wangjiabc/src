@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-
+             <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -12,15 +12,11 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('supplier')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
@@ -42,7 +38,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        
+        :scroll="tableScroll"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -66,8 +62,9 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
+          <a @click="handleSale(record)">出售</a>
+           <a-divider type="vertical" />
+           <a @click="detail(record.id)">详情</a>
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -84,24 +81,34 @@
       </a-table>
     </div>
 
-    <supplier-modal ref="modalForm" @ok="modalFormOk"></supplier-modal>
+    <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import SupplierModal from './modules/SupplierModal'
+  import MaterialModal from './modules/SaleModal'
+  import JInput from '@/components/jeecg/JInput.vue';
+  import { colAuthFilter } from "@/utils/authFilter"
+  import {getAction} from '@/api/manage'
 
   export default {
-    name: "SupplierList",
+    name: "SaleList",
     mixins:[JeecgListMixin],
     components: {
-      SupplierModal
+      MaterialModal,
+      JInput
     },
+    created() {
+          this.disableMixinCreated=true;
+          this.columns = colAuthFilter(this.columns,'materialList:');
+          this.loadData();
+          this.initDictConfig();
+     },
     data () {
       return {
-        description: 'supplier管理页面',
+        description: 'material管理页面',
         // 表头
         columns: [
           {
@@ -115,133 +122,78 @@
             }
           },
           {
-            title:'客户名称',
+            title:'名称',
             align:"center",
-            dataIndex: 'supplier'
+            dataIndex: 'name',
+            width:100
           },
-        /*  {
-            title:'联系人',
-            align:"center",
-            dataIndex: 'contacts'
-          },*/
-          {
-            title:'联系电话',
-            align:"center",
-            dataIndex: 'phonenum'
-          },
-         /* {
-            title:'电子邮箱',
-            align:"center",
-            dataIndex: 'email'
-          },*/
           {
             title:'备注',
             align:"center",
-            dataIndex: 'description'
+            dataIndex: 'remark',
+            width:80
+          },
+          {
+            title:'库存',
+            align:"center",
+            dataIndex: 'storage',
+            width:100
+          },
+          {
+            title:'成本',
+            align:"center",
+            dataIndex: 'cost',
+            width:80
+          },
+          {
+            title:'零售价',
+            align:"center",
+            dataIndex: 'retailprice',
+            width:80
           },
          /* {
-            title:'是否系统自带 0==系统 1==非系统',
+            title:'最低售价',
             align:"center",
-            dataIndex: 'isystem'
+            dataIndex: 'lowprice',
+            width:80
           },
           {
-            title:'类型',
+            title:'预设售价一',
             align:"center",
-            dataIndex: 'type'
-          },
-          {
-            title:'启用',
-            align:"center",
-            dataIndex: 'enabled'
-          },
-          {
-            title:'预收款',
-            align:"center",
-            dataIndex: 'advancein'
-          },
-          {
-            title:'期初应收',
-            align:"center",
-            dataIndex: 'beginneedget'
-          },
-          {
-            title:'期初应付',
-            align:"center",
-            dataIndex: 'beginneedpay'
-          },
-          {
-            title:'累计应收',
-            align:"center",
-            dataIndex: 'allneedget'
-          },
-          {
-            title:'累计应付',
-            align:"center",
-            dataIndex: 'allneedpay'
-          },
-          {
-            title:'传真',
-            align:"center",
-            dataIndex: 'fax'
-          },
-          {
-            title:'手机',
-            align:"center",
-            dataIndex: 'telephone'
-          },
-          {
-            title:'地址',
-            align:"center",
-            dataIndex: 'address'
-          },
-          {
-            title:'纳税人识别号',
-            align:"center",
-            dataIndex: 'taxnum'
-          },
-          {
-            title:'开户行',
-            align:"center",
-            dataIndex: 'bankname'
-          },
-          {
-            title:'账号',
-            align:"center",
-            dataIndex: 'accountnumber'
-          },
-          {
-            title:'税率',
-            align:"center",
-            dataIndex: 'taxrate'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'presetpriceone',
+            width:80
           },*/
           {
-            title:'创建人登录名称',
+            title:'组合',
             align:"center",
-            dataIndex: 'createBy'
-          },
+            dataIndex: 'combination',
+            width:50
+          },            
+         /* {
+            title:'实库',
+            align:"center",
+            dataIndex: 'realStorage',
+            width:100
+          },*/
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
+            fixed:"right",
+            width:180,
             scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/supplier/supplier/list",
-          delete: "/supplier/supplier/delete",
-          deleteBatch: "/supplier/supplier/deleteBatch",
-          exportXlsUrl: "/supplier/supplier/exportXls",
-          importExcelUrl: "supplier/supplier/importExcel",
+          list: "/food/material/list?column=sale&order=desc",
+          delete: "/food/material/delete",
+          deleteBatch: "/food/material/deleteBatch",
+          exportXlsUrl: "/food/material/exportXls",
+          importExcelUrl: "food/material/importExcel",
+          querydDetailByIdUrl: "food/material/querydDetailById"
         },
         dictOptions:{},
+        tableScroll:{x :10*100+50}
       }
     },
     computed: {
@@ -251,7 +203,28 @@
     },
     methods: {
       initDictConfig(){
-      }
+      },
+      handleSale(record) {
+        this.$refs.modalForm.edit(record);
+        this.$refs.modalForm.title = "商品出售";
+        this.$refs.modalForm.disableSubmit = false;
+      },
+       detail(record){
+              console.log(record);
+            var that = this;
+             getAction(that.url.querydDetailByIdUrl, {id:record}).then((res) => {
+              if (res.success) {
+                  var html="";
+                  res.result.findIndex( r=> {
+                    console.log(r);
+                     html+="商品："+r.name+"  数量："+r.unit+"  库存："+r.storage+"\n";
+                  });
+                  alert(html);
+                }
+              });
+              
+
+        }
     }
   }
 </script>

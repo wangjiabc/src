@@ -10,22 +10,22 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="供应商名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'supplier', validatorRules.supplier]" placeholder="请输入供应商名称"></a-input>
+        <a-form-item label="客户名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'supplier', validatorRules.supplier]" placeholder="请输入客户名称"></a-input>
         </a-form-item>
-        <a-form-item label="联系人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+       <!-- <a-form-item label="联系人" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'contacts', validatorRules.contacts]" placeholder="请输入联系人"></a-input>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item label="联系电话" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'phonenum', validatorRules.phonenum]" placeholder="请输入联系电话"></a-input>
         </a-form-item>
-        <a-form-item label="电子邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <!--  <a-form-item label="电子邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'email', validatorRules.email]" placeholder="请输入电子邮箱"></a-input>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'description', validatorRules.description]" placeholder="请输入备注"></a-input>
         </a-form-item>
-        <a-form-item label="是否系统自带 0==系统 1==非系统" :labelCol="labelCol" :wrapperCol="wrapperCol">
+      <!--  <a-form-item label="是否系统自带 0==系统 1==非系统" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'isystem', validatorRules.isystem]" placeholder="请输入是否系统自带 0==系统 1==非系统" style="width: 100%"/>
         </a-form-item>
         <a-form-item label="类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -87,7 +87,7 @@
         </a-form-item>
         <a-form-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'sysOrgCode', validatorRules.sysOrgCode]" placeholder="请输入所属部门"></a-input>
-        </a-form-item>
+        </a-form-item>-->
         
       </a-form>
     </a-spin>

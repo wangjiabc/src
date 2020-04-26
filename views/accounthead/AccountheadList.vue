@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <j-input placeholder="请输入账号模糊查询" v-model="queryParam.detail"></j-input>
+            <j-input placeholder="请输入账号模糊查询" v-model="queryParam.detail"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -38,7 +38,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        
+        :scroll="tableScroll"
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -62,7 +62,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+         <!-- <a @click="handleEdit(record)">编辑</a> -->
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -106,46 +106,33 @@
             title: '#',
             dataIndex: '',
             key:'rowIndex',
-            width:60,
+            width:50,
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
             }
           },
           {
-            title:'类型(支出/收入/收款/付款/转账)',
+            title:'类型',
             align:"center",
-            dataIndex: 'type'
+            dataIndex: 'type',
+            width:60
           },
           {
-            title:'单位Id(收款/付款单位)',
+            title:'单据编号',
             align:"center",
-            dataIndex: 'organid'
+            dataIndex: 'billno',
+            width:220
           },
-          {
-            title:'详情',
+           {
+            title:'客户名称',
             align:"center",
-            dataIndex: 'detail'
-          },
-          {
-            title:'变动金额(优惠/收款/付款/实付)',
-            align:"center",
-            dataIndex: 'changeamount'
+            dataIndex: 'supplier'
           },
           {
             title:'合计金额',
             align:"center",
             dataIndex: 'totalprice'
-          },
-          {
-            title:'账户(收款/付款)',
-            align:"center",
-            dataIndex: 'accountid'
-          },
-          {
-            title:'单据编号',
-            align:"center",
-            dataIndex: 'billno'
           },
           {
             title:'单据日期',
@@ -156,14 +143,21 @@
             }
           },
           {
+            title:'详情',
+            align:"center",
+            dataIndex: 'detail',
+            width:300
+          },
+           {
+            title:'支付方式',
+            align:"center",
+            dataIndex: 'payName'
+          },
+
+          {
             title:'备注',
             align:"center",
             dataIndex: 'remark'
-          },
-          {
-            title:'删除标记，0未删除，1删除',
-            align:"center",
-            dataIndex: 'deleteFlag'
           },
           {
             title:'创建日期',
@@ -177,29 +171,13 @@
             title:'创建人登录名称',
             align:"center",
             dataIndex: 'createBy'
-          },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode'
-          },
+          },         
           {
             title: '操作',
             dataIndex: 'action',
             align:"center",
+            fixed:"right",
+            width:100,
             scopedSlots: { customRender: 'action' }
           }
         ],
@@ -211,6 +189,7 @@
           importExcelUrl: "accounthead/accounthead/importExcel",
         },
         dictOptions:{},
+        tableScroll:{x :20*80+50}
       }
     },
     computed: {

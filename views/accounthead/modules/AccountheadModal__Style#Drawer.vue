@@ -55,6 +55,21 @@
         <a-form-item label="所属部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'sysOrgCode', validatorRules.sysOrgCode]" placeholder="请输入所属部门"></a-input>
         </a-form-item>
+        <a-form-item label="供应商id" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'supplierId', validatorRules.supplierId]" placeholder="请输入供应商id" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="供应商名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'supplier', validatorRules.supplier]" placeholder="请输入供应商名称"></a-input>
+        </a-form-item>
+        <a-form-item label="支付方式名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'payName', validatorRules.payName]" placeholder="请输入支付方式名称"></a-input>
+        </a-form-item>
+        <a-form-item label="支付方式" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'payType', validatorRules.payType]" placeholder="请输入支付方式"></a-input>
+        </a-form-item>
+        <a-form-item label="详情" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'detail', validatorRules.detail]" placeholder="请输入详情"></a-input>
+        </a-form-item>
         
       </a-form>
     </a-spin>
@@ -122,6 +137,16 @@
           ]},
           sysOrgCode: {rules: [
           ]},
+          supplierId: {rules: [
+          ]},
+          supplier: {rules: [
+          ]},
+          payName: {rules: [
+          ]},
+          payType: {rules: [
+          ]},
+          detail: {rules: [
+          ]},
         },
         url: {
           add: "/accounthead/accounthead/add",
@@ -140,7 +165,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode'))
+          this.form.setFieldsValue(pick(this.model,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','supplierId','supplier','payName','payType','detail'))
         })
       },
       close () {
@@ -183,7 +208,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode'))
+        this.form.setFieldsValue(pick(row,'type','organid','handspersonid','changeamount','totalprice','accountid','billno','billtime','remark','deleteFlag','createTime','createBy','updateBy','updateTime','sysOrgCode','supplierId','supplier','payName','payType','detail'))
       }
       
     }
