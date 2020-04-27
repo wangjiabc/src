@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-
+          <j-input placeholder="请输入账号模糊查询" v-model="queryParam.materialName"></j-input>
         </a-row>
       </a-form>
     </div>
@@ -12,11 +12,7 @@
     
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('accountitem')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -66,8 +62,6 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
@@ -92,12 +86,14 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import AccountitemModal from './modules/AccountitemModal'
+  import JInput from '@/components/jeecg/JInput.vue';
 
   export default {
     name: "AccountitemList",
     mixins:[JeecgListMixin],
     components: {
-      AccountitemModal
+      AccountitemModal,
+      JInput
     },
     data () {
       return {
@@ -115,75 +111,6 @@
             }
           },
           {
-            title:'表头Id',
-            align:"center",
-            dataIndex: 'headerid'
-          },
-          {
-            title:'账户Id',
-            align:"center",
-            dataIndex: 'accountid'
-          },
-          {
-            title:'收支项目Id',
-            align:"center",
-            dataIndex: 'inoutitemid'
-          },
-          {
-            title:'单项金额',
-            align:"center",
-            dataIndex: 'eachamount'
-          },
-          {
-            title:'单据备注',
-            align:"center",
-            dataIndex: 'remark'
-          },
-          {
-            title:'删除标记，0未删除，1删除',
-            align:"center",
-            dataIndex: 'deleteFlag'
-          },
-          {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'创建人登录名称',
-            align:"center",
-            dataIndex: 'createBy'
-          },
-          {
-            title:'更新人登录名称',
-            align:"center",
-            dataIndex: 'updateBy'
-          },
-          {
-            title:'更新日期',
-            align:"center",
-            dataIndex: 'updateTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'所属部门',
-            align:"center",
-            dataIndex: 'sysOrgCode',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
-            title:'商品id',
-            align:"center",
-            dataIndex: 'materialId'
-          },
-          {
             title:'商品名称',
             align:"center",
             dataIndex: 'materialName'
@@ -193,6 +120,41 @@
             align:"center",
             dataIndex: 'billno'
           },
+          {
+            title:'单项金额',
+            align:"center",
+            dataIndex: 'eachamount'
+          },
+          {
+            title:'数量',
+            align:"center",
+            dataIndex: 'count'
+          },
+          {
+            title:'合计金额',
+            align:"center",
+            dataIndex: 'eachcountamount'
+          },
+          
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
+          },
+          {
+            title:'单据备注',
+            align:"center",
+            dataIndex: 'remark'
+          },
+          {
+            title:'创建人登录名称',
+            align:"center",
+            dataIndex: 'createBy'
+          },
+
           {
             title: '操作',
             dataIndex: 'action',

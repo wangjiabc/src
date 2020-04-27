@@ -82,6 +82,83 @@
     </div>
 
     <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
+
+    <a-row :gutter="24">
+          <a-col>
+            <j-modal
+              :visible.sync="modal.visible"
+              :width="1200"
+              :title="modal.title"
+              :fullscreen.sync="modal.fullscreen"
+            >
+
+              <template>
+
+    <div>
+      <a-button @click="receipt(billNo)" type="primary">打印</a-button>
+      <div
+        class="tables"
+      >
+        <div style="width: 1000px" id="pdfDom">
+          <p align="center" class="title">中百物业收款收据</p>
+          <div style="width: 100%;margin-bottom: 10px;">
+            <div style="width: 35%;float: left;font-weight:bold">房间:{{ Receipt.roomNo }} </div>
+            <div style="width: 35%;float: left;font-weight:bold">建筑面积（平方米）: {{ Receipt.buildArea }}</div>
+            <div style="width: 30%;float: right;font-weight:bold">收据编号:{{ billNo }} </div>
+          </div>
+          <div style="width: 100%;margin-bottom: 10px;">
+            <div style="width: 35%;float: left;font-weight:bold">业主 : {{ Receipt.ownerName }}</div>
+            <div style="width: 35%;float: left;font-weight:bold">收款类型: {{ Receipt.payType }}</div>
+            <div style="width: 30%;float: right;font-weight:bold">收款日期:{{ (Receipt.payTime || '').split(' ')[0] }}</div>
+          </div>
+          <table class="table" id="printpdf">
+            <tr >
+              <td colspan="2" width="220">费用项目</td>
+              <td colspan="2" width="220">起始日期</td>
+              <td colspan="2" width="220">截止日期</td>
+              <td colspan="2" width="200">单价</td>
+              <td colspan="2" width="170">费用金额</td>
+              <td colspan="2" width="170">上月数</td>
+              <td colspan="2" width="170">本月数</td>
+              <td colspan="2" width="390">实用量</td>
+              <td colspan="2" width="220">本次实收</td>
+            </tr>
+            <tr v-for="(item,index) in receiptData" :key="index">
+              <td colspan="2" width="200">{{ item.itemText }}</td>
+              <td colspan="2" width="170">{{ (item.startTime || '').split(' ')[0] }}</td>
+              <td colspan="2" width="170">{{ (item.endTime || '').split(' ')[0] }}</td>
+              <td colspan="2" width="170">{{ item.price }}</td>
+              <td colspan="2" width="170">{{ item.amount }}</td>
+              <td colspan="2" width="170">{{ item.startRecord }}</td>
+              <td colspan="2" width="170">{{ item.endRecord }}</td>
+              <td colspan="2" width="170">{{item.record}}</td>
+<!--              <td colspan="2" width="170">{{ item.discountAmount }}</td>-->
+              <td colspan="2" width="170">{{ item.actualAmount }}</td>
+            </tr>
+            <tr>
+              <td colspan="2" width="300">合计(人民币大写)</td>
+              <td colspan="6" width="220"></td>
+              <td colspan="2" width="220">{{ Receipt.totalAmount }}</td>
+              <td colspan="4" width="220"></td>
+              <td colspan="2" width="220">优惠：{{Receipt.totalDiscountAmount }}</td>
+              <td colspan="2" width="200">{{ Receipt.totalActualAmount }}</td>
+            </tr>
+          </table>
+          <div style="width: 100%;margin-bottom: 10px;">
+            <div style="width: 30%;float: left;font-weight:bold">结算人:{{Receipt.employeeName}}</div>
+            <div style="width: 35%;float: left;font-weight:bold">服务电话:</div>
+          </div>
+        </div>
+      </div>
+     </div>
+
+      </template>
+
+
+            </j-modal>
+          </a-col>
+    </a-row>
+
   </a-card>
 </template>
 
@@ -92,6 +169,7 @@
   import JInput from '@/components/jeecg/JInput.vue';
   import { colAuthFilter } from "@/utils/authFilter"
   import {getAction} from '@/api/manage'
+  import printJS from 'print-js'
 
   export default {
     name: "SaleList",
@@ -110,6 +188,10 @@
       return {
         description: 'material管理页面',
         // 表头
+         modal: {
+          visible: false,
+          fullscreen: false,
+        },
         columns: [
           {
             title: '#',
@@ -184,6 +266,36 @@
             scopedSlots: { customRender: 'action' }
           }
         ],
+        tableData: [],
+      Receipt: {
+        ownerName: '',
+        buildArea: '',
+        payType: '',
+        payUserId: '',
+        payTime: '',
+        payUsername: '',
+        payStatus: '',
+        refundAmount: '',
+        refundTime: '',
+        tenantId: '',
+        deptId: '',
+        remarks: '',
+        phone: '',
+        startTime: '',
+        endTime: '',
+        price: '',
+        startRecord: '',
+        endRecord: '',
+        area: '',
+        amount: '',
+        DiscountAmount: '',
+        actualAmount: '',
+        billNo: '',
+        employeeName: '',
+        roomNo: ''
+      },
+      receiptData: [],
+      billNo: 0,
         url: {
           list: "/food/material/list?column=sale&order=desc",
           delete: "/food/material/delete",
@@ -205,9 +317,12 @@
       initDictConfig(){
       },
       handleSale(record) {
-        this.$refs.modalForm.edit(record);
+        /*this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "商品出售";
-        this.$refs.modalForm.disableSubmit = false;
+        this.$refs.modalForm.disableSubmit = false;*/
+
+        this.modal.visible=true;
+
       },
        detail(record){
               console.log(record);
@@ -224,10 +339,59 @@
               });
               
 
+        },
+        receipt (id) {
+            getAction("/accounthead/accounthead/print", {id:id}).then((res) => {
+              console.log(res)
+              const blob = new Blob([res], { type: 'application/pdf' })
+              const url = URL.createObjectURL(blob)
+              printJS({
+                  printable: url,
+                  type: 'pdf'
+                })
+            });
         }
     }
   }
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .table p {
+    text-align: center;
+    margin: 10px 0;
+    color: #000c17;
+    font-size: 18px;
+  }
+  .table{
+    border-style: solid;
+    border-width: 1.0pt;
+    font-variant: normal;
+  }
+  td{
+    border-style: solid;
+    border-width: 1.0pt;
+  }
+  .centent > p{
+    float: left;
+    font-size: 18px;
+    font-variant: normal;
+    color: #000c17;
+  }
+  .tables{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #pdfDom{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .title{
+    font-size: 30px;
+    font-variant: normal;
+  }
+
 </style>
