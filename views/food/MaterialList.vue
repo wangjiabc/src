@@ -104,12 +104,14 @@
               :title="modal.title"
               :fullscreen.sync="modal.fullscreen"
             >
-              <template v-for="item in items">
-                <div >
-                <li style="display: inline-block">商品名称：{{item.name}}</li>
-                <li style="display: inline-block">　数量：</li>
-                <input style="display: inline-block" type="text"  v-model="item.number">
-                <Button style="display: inline-block" @click="delCompages(item.id)" >删除</Button>
+              <template v-for="item in items" >
+                <div class="modal">
+                  <div class="tit">
+                    <li style="display: inline-block">商品名称：{{item.name}}</li>
+                    <li style="display: inline-block">　数量：</li>
+                    <input style="display: inline-block" type="text"  v-model="item.number">
+                    <Button class="bbb" style="display: inline-block" @click="delCompages(item.id)" >删除</Button>
+                  </div>
                 </div>
               </template>
               <div>
@@ -163,11 +165,13 @@
               :fullscreen.sync="modal2.fullscreen"
             >
               <template v-for="item in items">
-                <div >
-                <li style="display: inline-block">商品名称：{{item.name}}</li>   
-                <li style="display: inline-block">成本：</li>  
-                <input style="display: inline-block" type="text"  v-model="item.cost">          
-                </div>                
+                <div class="modal">
+                  <div class="tit">
+                    <li style="display: inline-block">商品名称：{{item.name}}</li>   
+                    <li class="bbb" style="display: inline-block">成本：</li>  
+                    <input style="display: inline-block" type="text"  v-model="item.cost">          
+                  </div>  
+                </div>              
               </template>
               <template>
                <li style="display: inline-block">　数量：</li>
@@ -568,4 +572,21 @@
 </script>
 <style scoped>
   @import '~@assets/less/common.less';
+  .modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    margin: 1rem;
+  }
+  .tit {
+    text-align: center;
+    position: relative;
+    }
+  .bbb{
+     margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+
 </style>

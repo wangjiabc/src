@@ -92,10 +92,10 @@
               :fullscreen.sync="modal.fullscreen"
             >
 
-              <template>
-
+<template>
+  <a-card>
     <div>
-      <a-button @click="receipt(billNo)" type="primary">打印</a-button>
+      <a-button v-print="'#pdfDom'" type="primary">打印</a-button>
       <div
         class="tables"
       >
@@ -150,8 +150,8 @@
           </div>
         </div>
       </div>
-     </div>
-
+    </div>
+    </a-card>
       </template>
 
 
@@ -169,7 +169,9 @@
   import JInput from '@/components/jeecg/JInput.vue';
   import { colAuthFilter } from "@/utils/authFilter"
   import {getAction} from '@/api/manage'
-  import printJS from 'print-js'
+  import Print from 'vue-print-nb'
+  import Vue from 'vue'
+  Vue.use(Print); 
 
   export default {
     name: "SaleList",
