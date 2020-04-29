@@ -106,11 +106,11 @@
             >
               <template v-for="item in items" >
                 <div class="modal">
-                  <div class="tit">
-                    <li style="display: inline-block">商品名称：{{item.name}}</li>
-                    <li style="display: inline-block">　数量：</li>
-                    <input style="display: inline-block" type="text"  v-model="item.number">
-                    <Button class="bbb" style="display: inline-block" @click="delCompages(item.id)" >删除</Button>
+                  <div class="tit" >
+                    <li style="width: 30%;display: inline-block">商品名称：{{item.name}}</li>
+                    <li style="width: 10%;display: inline-block">　数量：</li>
+                    <input style="size:5;display: inline-block" type="text"  v-model="item.number">
+                    <Button class="bbb" style="width: 10%;display: inline-block" @click="delCompages(item.id)" >删除</Button>
                   </div>
                 </div>
               </template>
@@ -167,9 +167,9 @@
               <template v-for="item in items">
                 <div class="modal">
                   <div class="tit">
-                    <li style="display: inline-block">商品名称：{{item.name}}</li>   
-                    <li class="bbb" style="display: inline-block">成本：</li>  
-                    <input style="display: inline-block" type="text"  v-model="item.cost">          
+                    <li style="width: 30%;display: inline-block">商品名称：{{item.name}}</li>   
+                    <li class="bbb" style="width: 10%;display: inline-block">成本：</li>  
+                    <input style="size:5;display: inline-block" type="text"  v-model="item.cost">          
                   </div>  
                 </div>              
               </template>

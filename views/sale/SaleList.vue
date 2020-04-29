@@ -13,9 +13,6 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
@@ -83,6 +80,7 @@
 
     <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
 
+
     <a-row :gutter="24">
           <a-col>
             <j-modal
@@ -91,7 +89,6 @@
               :title="modal.title"
               :fullscreen.sync="modal.fullscreen"
             >
-
 <template>
   <a-card>
     <div>
@@ -100,64 +97,59 @@
         class="tables"
       >
         <div style="width: 1000px" id="pdfDom">
-          <p align="center" class="title">中百物业收款收据</p>
-          <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 35%;float: left;font-weight:bold">房间:{{ Receipt.roomNo }} </div>
-            <div style="width: 35%;float: left;font-weight:bold">建筑面积（平方米）: {{ Receipt.buildArea }}</div>
-            <div style="width: 30%;float: right;font-weight:bold">收据编号:{{ billNo }} </div>
-          </div>
-          <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 35%;float: left;font-weight:bold">业主 : {{ Receipt.ownerName }}</div>
-            <div style="width: 35%;float: left;font-weight:bold">收款类型: {{ Receipt.payType }}</div>
-            <div style="width: 30%;float: right;font-weight:bold">收款日期:{{ (Receipt.payTime || '').split(' ')[0] }}</div>
+          <p align="center" class="title">销售单</p>
+          <div style="width: 100%;">
+            <div style="width: 40%;float: left;font-weight:bold">客户名称 : 
+              <a  style="width: 30%;display: inline-block">
+                <j-search-select-tag　placeholder=""
+                      v-model="selectUserValue"　:dictOptions="dictOptionsUser">
+                </j-search-select-tag>
+              </a>
+            </div>
+            <div style="width: 40%;float: left;font-weight:bold">收款类型:
+              <a  style="width: 30%;display: inline-block">
+                <j-search-select-tag　placeholder=""
+                      v-model="selectTypeValue"　:dictOptions="dictOptionsType">
+                </j-search-select-tag>
+              </a>
+            </div>
+            <div style="width: 20%;float: right;font-weight:bold">收款日期:{{new Date().getFullYear()+"/"+new Date().getMonth()+"/"+new Date().getDate()}}</div>
           </div>
           <table class="table" id="printpdf">
             <tr >
-              <td colspan="2" width="220">费用项目</td>
-              <td colspan="2" width="220">起始日期</td>
-              <td colspan="2" width="220">截止日期</td>
-              <td colspan="2" width="200">单价</td>
-              <td colspan="2" width="170">费用金额</td>
-              <td colspan="2" width="170">上月数</td>
-              <td colspan="2" width="170">本月数</td>
-              <td colspan="2" width="390">实用量</td>
-              <td colspan="2" width="220">本次实收</td>
+              <td colspan="2" width="300" height="50">名称/规格</td>
+              <td colspan="2" width="220">数量</td>
+              <td colspan="2" width="220">单价</td>
+              <td colspan="2" width="200">金额</td>
+              <td colspan="2" width="170">备注</td>
             </tr>
             <tr v-for="(item,index) in receiptData" :key="index">
-              <td colspan="2" width="200">{{ item.itemText }}</td>
-              <td colspan="2" width="170">{{ (item.startTime || '').split(' ')[0] }}</td>
-              <td colspan="2" width="170">{{ (item.endTime || '').split(' ')[0] }}</td>
-              <td colspan="2" width="170">{{ item.price }}</td>
-              <td colspan="2" width="170">{{ item.amount }}</td>
-              <td colspan="2" width="170">{{ item.startRecord }}</td>
-              <td colspan="2" width="170">{{ item.endRecord }}</td>
-              <td colspan="2" width="170">{{item.record}}</td>
-<!--              <td colspan="2" width="170">{{ item.discountAmount }}</td>-->
-              <td colspan="2" width="170">{{ item.actualAmount }}</td>
+              <td colspan="2" width="300">{{ item.itemText }}</td>
+              <td colspan="2" width="220">{{ item.price }}</td>
+              <td colspan="2" width="220">{{ item.amount }}</td>
+              <td colspan="2" width="220">{{ item.startRecord }}</td>
+              <td colspan="2" width="220">{{ item.endRecord }}</td>
             </tr>
             <tr>
-              <td colspan="2" width="300">合计(人民币大写)</td>
-              <td colspan="6" width="220"></td>
-              <td colspan="2" width="220">{{ Receipt.totalAmount }}</td>
-              <td colspan="4" width="220"></td>
+              <td colspan="2" width="300" height="70" contentEditable="true">合计(人民币大写)</td>
+              <td colspan="2" width="220"></td>
+              <td colspan="2" width="220" contentEditable="true">{{ Receipt.totalAmount }}</td>
+              <td colspan="2" width="220"></td>
               <td colspan="2" width="220">优惠：{{Receipt.totalDiscountAmount }}</td>
-              <td colspan="2" width="200">{{ Receipt.totalActualAmount }}</td>
             </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 30%;float: left;font-weight:bold">结算人:{{Receipt.employeeName}}</div>
-            <div style="width: 35%;float: left;font-weight:bold">服务电话:</div>
+            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{Receipt.employeeName}}</div>
           </div>
         </div>
       </div>
     </div>
     </a-card>
       </template>
-
-
             </j-modal>
           </a-col>
     </a-row>
+
 
   </a-card>
 </template>
@@ -172,13 +164,15 @@
   import Print from 'vue-print-nb'
   import Vue from 'vue'
   Vue.use(Print); 
+  import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
 
   export default {
     name: "SaleList",
     mixins:[JeecgListMixin],
     components: {
       MaterialModal,
-      JInput
+      JInput,
+      JSearchSelectTag
     },
     created() {
           this.disableMixinCreated=true;
@@ -194,6 +188,22 @@
           visible: false,
           fullscreen: false,
         },
+        selectUserValue:"",
+        dictOptionsUser:[],
+        selectTypeValue:"",
+        dictOptionsType:[{
+          text:"现金",
+          value:"1"
+        },{
+          text:"微信支付",
+          value:"2"
+        },{
+          text:"支付宝",
+          value:"3"
+        },{
+          text:"银联",
+          value:"4"
+        }],
         columns: [
           {
             title: '#',
@@ -304,7 +314,8 @@
           deleteBatch: "/food/material/deleteBatch",
           exportXlsUrl: "/food/material/exportXls",
           importExcelUrl: "food/material/importExcel",
-          querydDetailByIdUrl: "food/material/querydDetailById"
+          querydDetailByIdUrl: "food/material/querydDetailById",
+          selectGroupUserUrl: "supplier/supplier/selectGroupUser"
         },
         dictOptions:{},
         tableScroll:{x :10*100+50}
@@ -322,9 +333,18 @@
         /*this.$refs.modalForm.edit(record);
         this.$refs.modalForm.title = "商品出售";
         this.$refs.modalForm.disableSubmit = false;*/
-
+        var that = this;
         this.modal.visible=true;
-
+        getAction(that.url.selectGroupUserUrl, {}).then((res) => {
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.text=r.supplier;
+                      item.value = r.phonenum;
+                    this.dictOptionsUser.push(item);
+                  })
+                }
+          });
       },
        detail(record){
               console.log(record);
