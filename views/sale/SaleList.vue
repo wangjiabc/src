@@ -124,27 +124,24 @@
               <td colspan="2" width="170">备注</td>
             </tr>
             <tr v-for="(item,index) in receiptData" :key="index">
-              <td colspan="2" width="300">{{ item.itemText }}</td>
-              <td colspan="2" width="220">{{ item.price }}</td>
-              <td colspan="2" width="220">{{ item.amount }}</td>
-              <td colspan="2" width="220">{{ item.startRecord }}</td>
-              <td colspan="2" width="220">{{ item.endRecord }}</td>
-            </tr>
-            <tr>
-              <td colspan="2" width="300" height="70" contentEditable="true">合计(人民币大写)</td>
-              <td colspan="2" width="220"></td>
-              <td colspan="2" width="220" contentEditable="true">{{ Receipt.totalAmount }}</td>
-              <td colspan="2" width="220"></td>
-              <td colspan="2" width="220">优惠：{{Receipt.totalDiscountAmount }}</td>
+              <td colspan="2" width="300" height="50">{{ item.name }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tNumber" >{{ item.number }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRetailprice">{{ item.retailprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tTotalprice">{{ item.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRemark">{{ item.remark }}</td>
             </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{Receipt.employeeName}}</div>
+            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{ selectUserValue }}</div>
           </div>
         </div>
       </div>
     </div>
     </a-card>
+          <div slot="footer">
+    	            <Button @click="hideModel()">关闭</Button>
+                  <Button type="primary" @click="save()">保存</Button>
+      </div>
       </template>
             </j-modal>
           </a-col>
@@ -180,6 +177,18 @@
           this.loadData();
           this.initDictConfig();
      },
+    mounted(){
+        getAction(this.url.selectGroupUserUrl, {}).then((res) => {
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.text=r.SUPPLIER;
+                      item.value = r.PHONENUM;
+                    this.dictOptionsUser.push(item);
+                  })
+                }
+          });
+    },
     data () {
       return {
         description: 'material管理页面',
@@ -204,6 +213,11 @@
           text:"银联",
           value:"4"
         }],
+         watch: {
+                receiptData(newName, oldName) {
+                  console.log('receiptData[0].number changed')
+                }
+        },
         columns: [
           {
             title: '#',
@@ -315,7 +329,8 @@
           exportXlsUrl: "/food/material/exportXls",
           importExcelUrl: "food/material/importExcel",
           querydDetailByIdUrl: "food/material/querydDetailById",
-          selectGroupUserUrl: "supplier/supplier/selectGroupUser"
+          selectGroupUserUrl: "supplier/supplier/selectGroupUser",
+          queryByIdsUrl: "food/material/queryByIds",
         },
         dictOptions:{},
         tableScroll:{x :10*100+50}
@@ -335,16 +350,25 @@
         this.$refs.modalForm.disableSubmit = false;*/
         var that = this;
         this.modal.visible=true;
-        getAction(that.url.selectGroupUserUrl, {}).then((res) => {
+        var ids = "";
+        ids += record.id + ",";
+        this.receiptData=[];
+        getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+              console.log(res.result);
               if (res.success) {
                   res.result.findIndex( r=> {
                     var item = new Object();
-                      item.text=r.supplier;
-                      item.value = r.phonenum;
-                    this.dictOptionsUser.push(item);
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.retailprice= r.retailprice;
+                      item.number=1;
+                      item.totalprice=item.retailprice*item.number;
+                    this.receiptData.push(item);
                   })
                 }
+                console.log(this.receiptData);
           });
+        
       },
        detail(record){
               console.log(record);
@@ -372,6 +396,16 @@
                   type: 'pdf'
                 })
             });
+        },
+        hideModel(){
+          this.modal.visible=false;
+        },
+        save(){
+          var number=document.getElementById("tNumber").innerText;
+          var retailprice=document.getElementById("tRetailprice").innerText;
+          var totalprice=document.getElementById("tTotalprice").innerText;
+          var remark=document.getElementById("tRemark").innerText;
+          console.log(number+retailprice+totalprice+remark);
         }
     }
   }
