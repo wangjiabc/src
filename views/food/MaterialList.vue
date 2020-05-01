@@ -104,6 +104,14 @@
               :title="modal.title"
               :fullscreen.sync="modal.fullscreen"
             >
+            <template >
+                  <div class="modal">
+                   <div class="tit" >
+                      <li style="width: 20%;display: inline-block">　商品名称 ：</li>
+                      <input style="size:15;display: inline-block" type="text" id="compagesName">
+                    </div>
+                  </div>
+            </template>
               <template v-for="item in items" >
                 <div class="modal">
                   <div class="tit" >
@@ -373,7 +381,10 @@
 
           var Url=this.url.compagesUrl;
     
-          getAction(Url, {items:formData,compagesId:this.compagesId}).then((res) => {
+          var compagesName=document.getElementById("compagesName").value;
+
+          getAction(Url, {items:formData,compagesId:this.compagesId,
+                    compagesName:compagesName}).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
                 that.loadData();
@@ -556,11 +567,16 @@
                     console.log(res.result);
                     res.result.findIndex( r=> {
                     var item = new Object();
+                    if(r.ID==record.id){
+                      var compagesName=document.getElementById("compagesName");
+                      compagesName.value=r.NAME;
+                    }else{
                       item.id=r.ID;
                       item.name = r.NAME;
                       item.number= r.AMOUNT;
-                    this.items.push(item);
-                    this.cmpagesItems.push(item);
+                      this.items.push(item);
+                      this.cmpagesItems.push(item);
+                    }
                   })
                 }
               });

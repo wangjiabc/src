@@ -132,7 +132,7 @@
             </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{ selectUserValue }}</div>
+            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{ selectUserValue.slice(10,21) }}</div>
           </div>
         </div>
       </div>
@@ -178,12 +178,18 @@
           this.initDictConfig();
      },
     mounted(){
-        getAction(this.url.selectGroupUserUrl, {}).then((res) => {
+        getAction(this.url.selectGroupUserUrl, {}).then((res) => {             
               if (res.success) {
                   res.result.findIndex( r=> {
+                    console.log("res===="+r);
                     var item = new Object();
+                      //item.id=r.ID;
                       item.text=r.SUPPLIER;
-                      item.value = r.PHONENUM;
+                      //item.value = r.PHONENUM;
+                      var object = new Object();
+                      object.phone=r.PHONENUM;
+                      object.id=r.ID;
+                      item.value=JSON.stringify(object); 
                     this.dictOptionsUser.push(item);
                   })
                 }
@@ -331,6 +337,7 @@
           querydDetailByIdUrl: "food/material/querydDetailById",
           selectGroupUserUrl: "supplier/supplier/selectGroupUser",
           queryByIdsUrl: "food/material/queryByIds",
+          sale: "/food/material/sale"
         },
         dictOptions:{},
         tableScroll:{x :10*100+50}
@@ -401,11 +408,46 @@
           this.modal.visible=false;
         },
         save(){
+          var id=this.receiptData[0].id;
           var number=document.getElementById("tNumber").innerText;
           var retailprice=document.getElementById("tRetailprice").innerText;
           var totalprice=document.getElementById("tTotalprice").innerText;
           var remark=document.getElementById("tRemark").innerText;
-          console.log(number+retailprice+totalprice+remark);
+          console.log(number+retailprice+totalprice+remark+"   "+id);
+          var supplierId;
+          var supplier;
+          try{
+            var json = JSON.parse(this.selectUserValue);
+            supplierId=json.id;
+            for(var j = 0,len=this.dictOptionsUser.length; j < len; j++) {
+                  var item = this.dictOptionsUser[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.id;
+                  if(uid==supplierId){
+                    supplier=item.text;
+                    break;
+                  }
+            } 
+          }catch(e){
+              alert("请选择客户");
+          }
+          //console.log(this.selectTypeValue + supplierId +supplier);
+        var type=this.selectTypeValue;
+         var that=this;
+         getAction(this.url.sale,{id:id,retailprice:retailprice,number:number,
+         totalprice:totalprice,remark:remark,supplierId:supplierId,supplier:supplier,
+         type:type}).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+                this.modal.visible=false;
+              }else{
+                that.$message.warning(res.message);
+                this.modal.visible=false;
+              }
+            }).finally(() => {
+              this.modal.visible=false;
+            })
         }
     }
   }
