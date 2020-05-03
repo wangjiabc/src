@@ -22,6 +22,12 @@
       <!--  <a-form-item label="电子邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'email', validatorRules.email]" placeholder="请输入电子邮箱"></a-input>
         </a-form-item> -->
+        <a-form-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'address', validatorRules.address]" placeholder="请输入地址"></a-input>
+        </a-form-item>
+        <a-form-item label="传真" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'fax', validatorRules.fax]" placeholder="请输入传真"></a-input>
+        </a-form-item>
         <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'description', validatorRules.description]" placeholder="请输入备注"></a-input>
         </a-form-item>
@@ -49,15 +55,11 @@
         <a-form-item label="累计应付" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'allneedpay', validatorRules.allneedpay]" placeholder="请输入累计应付" style="width: 100%"/>
         </a-form-item>
-        <a-form-item label="传真" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'fax', validatorRules.fax]" placeholder="请输入传真"></a-input>
-        </a-form-item>
+        
         <a-form-item label="手机" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'telephone', validatorRules.telephone]" placeholder="请输入手机"></a-input>
         </a-form-item>
-        <a-form-item label="地址" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'address', validatorRules.address]" placeholder="请输入地址"></a-input>
-        </a-form-item>
+        
         <a-form-item label="纳税人识别号" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'taxnum', validatorRules.taxnum]" placeholder="请输入纳税人识别号"></a-input>
         </a-form-item>

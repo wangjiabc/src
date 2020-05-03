@@ -14,6 +14,9 @@
     <div class="table-operator">
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1"  @click="handleAllSale"><a-icon type="plus"/>出售</a-menu-item>
+        </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
@@ -97,42 +100,91 @@
         class="tables"
       >
         <div style="width: 1000px" id="pdfDom">
-          <p align="center" class="title">销售单</p>
+          <p align="center" class="title">{{email}}销售单</p>
           <div style="width: 100%;">
-            <div style="width: 40%;float: left;font-weight:bold">客户名称 : 
+            <div style="width: 100%;margin-bottom: 10px;">
+              <div style="width: 35%;float: left" id="phoneNum">客户电话:</div>
+              <div style="width: 35%;float: left" >订单号:{{orderNumber}}</div>
+              <div style="width: 30%;float: left" id="fax">传真:</div>
+            </div>
+          </div>
+          <div style="width: 100%;">
+            <div style="width: 100%;margin-bottom: 10px;">
+              <div style="width: 35%;float: left" id="address">交货地址:</div>
+            </div>
+          </div>
+          <div style="width: 100%;">
+            <div style="width: 40%;float: left">客户名称 : 
               <a  style="width: 30%;display: inline-block">
                 <j-search-select-tag　placeholder=""
-                      v-model="selectUserValue"　:dictOptions="dictOptionsUser">
+                      v-model="selectUserValue"　:dictOptions="dictOptionsUser"　@change="selectFn($event)">
                 </j-search-select-tag>
               </a>
             </div>
-            <div style="width: 40%;float: left;font-weight:bold">收款类型:
+            <div style="width: 40%;float: left">收款类型:
               <a  style="width: 30%;display: inline-block">
                 <j-search-select-tag　placeholder=""
                       v-model="selectTypeValue"　:dictOptions="dictOptionsType">
                 </j-search-select-tag>
               </a>
             </div>
-            <div style="width: 20%;float: right;font-weight:bold">收款日期:{{new Date().getFullYear()+"/"+new Date().getMonth()+"/"+new Date().getDate()}}</div>
+            <div style="width: 20%;float: right">收款日期:{{new Date().getFullYear()+"/"+(new Date().getMonth()+1)+"/"+new Date().getDate()}}</div>
           </div>
           <table class="table" id="printpdf">
             <tr >
+              <td colspan="1" width="40" height="50">序号</td>
               <td colspan="2" width="300" height="50">名称/规格</td>
               <td colspan="2" width="220">数量</td>
               <td colspan="2" width="220">单价</td>
-              <td colspan="2" width="200">金额</td>
+              <td colspan="2" width="200">总价</td>
               <td colspan="2" width="170">备注</td>
             </tr>
             <tr v-for="(item,index) in receiptData" :key="index">
+              <td colspan="1" width="40" height="50">1</td>
               <td colspan="2" width="300" height="50">{{ item.name }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tNumber" >{{ item.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice">{{ item.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice">{{ item.totalprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark">{{ item.remark }}</td>
             </tr>
+            <tr v-for="(item2,index2) in receiptData2" :key="'info-2'+index2">
+            <td colspan="1" width="40" height="50">2</td>
+              <td colspan="2" width="300" height="50">{{ item2.name }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tNumber2" >{{ item2.number }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRetailprice2">{{ item2.retailprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tTotalprice2">{{ item2.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRemark2">{{ item2.remark }}</td>
+            </tr>
+            <tr v-for="(item3,index3) in receiptData3" :key="'info-3'+index3">
+            <td colspan="1" width="40" height="50">3</td>
+              <td colspan="2" width="300" height="50">{{ item3.name }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tNumber3" >{{ item3.number }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRetailprice3">{{ item3.retailprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tTotalprice3">{{ item3.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRemark3">{{ item3.remark }}</td>
+            </tr>
+            <tr v-for="(item4,index4) in receiptData4" :key="'info-4'+index4">
+            <td colspan="1" width="40" height="50">4</td>
+              <td colspan="2" width="300" height="50">{{ item4.name }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tNumber4" >{{ item4.number }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRetailprice4">{{ item4.retailprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tTotalprice4">{{ item4.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRemark4">{{ item4.remark }}</td>
+            </tr>
+            <tr v-for="(item5,index5) in receiptData5" :key="'info-5'+index5">
+            <td colspan="1" width="40" height="50">5</td>
+              <td colspan="2" width="300" height="50">{{ item5.name }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tNumber5" >{{ item5.number }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRetailprice5">{{ item5.retailprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tTotalprice5">{{ item5.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tRemark5">{{ item5.remark }}</td>
+            </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
-            <div style="width: 35%;float: left;font-weight:bold">客户电话:{{ selectUserValue.slice(10,21) }}</div>
+            <div style="width: 35%;float: left">备注：请仔细核对货物型号和数量，并签字回传</div>
+          </div>
+          <div style="width: 100%;margin-bottom: 10px;">
+            <div style="width: 35%;float: left">制单：{{realName}}</div>
           </div>
         </div>
       </div>
@@ -189,11 +241,23 @@
                       var object = new Object();
                       object.phone=r.PHONENUM;
                       object.id=r.ID;
+                      object.address=r.ADDRESS;
+                      object.fax=r.FAX;
+                      if(r.EMAIL!=null){
+                          this.email=r.EMAIL;
+                      }
                       item.value=JSON.stringify(object); 
                     this.dictOptionsUser.push(item);
                   })
                 }
           });
+
+         getAction(this.url.selectSysUserUrl, {}).then((res) => {           
+              if (res.success) {
+                  console.log("res=="+res.result.realname); 
+                  this.realName=res.result.realname;
+                }
+              });
     },
     data () {
       return {
@@ -219,11 +283,9 @@
           text:"银联",
           value:"4"
         }],
-         watch: {
-                receiptData(newName, oldName) {
-                  console.log('receiptData[0].number changed')
-                }
-        },
+        email:"",
+        realName:"",
+        orderNumber:"",
         columns: [
           {
             title: '#',
@@ -327,6 +389,10 @@
         roomNo: ''
       },
       receiptData: [],
+      receiptData2: [],
+      receiptData3: [],
+      receiptData4: [],
+      receiptData5: [],
       billNo: 0,
         url: {
           list: "/food/material/list?column=sale&order=desc",
@@ -336,6 +402,7 @@
           importExcelUrl: "food/material/importExcel",
           querydDetailByIdUrl: "food/material/querydDetailById",
           selectGroupUserUrl: "supplier/supplier/selectGroupUser",
+          selectSysUserUrl: "supplier/supplier/selectSysUser",
           queryByIdsUrl: "food/material/queryByIds",
           sale: "/food/material/sale"
         },
@@ -360,6 +427,7 @@
         var ids = "";
         ids += record.id + ",";
         this.receiptData=[];
+        this.orderNumber=this.randomNumber();
         getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
               console.log(res.result);
               if (res.success) {
@@ -432,11 +500,11 @@
               alert("请选择客户");
           }
           //console.log(this.selectTypeValue + supplierId +supplier);
-        var type=this.selectTypeValue;
-         var that=this;
-         getAction(this.url.sale,{id:id,retailprice:retailprice,number:number,
-         totalprice:totalprice,remark:remark,supplierId:supplierId,supplier:supplier,
-         type:type}).then((res)=>{
+          var type=this.selectTypeValue;
+          var that=this;
+          getAction(this.url.sale,{id:id,retailprice:retailprice,number:number,
+          totalprice:totalprice,remark:remark,supplierId:supplierId,supplier:supplier,
+          type:type,orderNumber:this.orderNumber}).then((res)=>{
               if(res.success){
                 that.$message.success(res.message);
                 that.$emit('ok');
@@ -448,7 +516,79 @@
             }).finally(() => {
               this.modal.visible=false;
             })
-        }
+        },
+        handleAllSale(row) {
+          this.modal.visible=true;
+          this.items=[];
+          this.cmpagesItems=[];
+          this.orderNumber=this.randomNumber();
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+              console.log(this.selectedRowKeys[a]);
+              ids += this.selectedRowKeys[a] + ",";
+          }
+          var that = this;
+          this.receiptData=[];
+          this.receiptData2=[];
+          this.receiptData3=[];
+          this.receiptData4=[];
+          this.receiptData5=[];
+          getAction(that.url.queryByIdsUrl,
+           {ids: ids}).then((res) => {
+              if (res.success) {
+                  var i=0;
+                  res.result.findIndex( r=> {                  
+                      var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.retailprice= r.retailprice;
+                      item.number=1;
+                      item.totalprice=item.retailprice*item.number;
+                      switch(i){
+                                case 0: this.receiptData.push(item);
+                                break;
+                                case 1: this.receiptData2.push(item);
+                                break;
+                                case 2: this.receiptData3.push(item);
+                                break;
+                                case 3: this.receiptData4.push(item);
+                                break;
+                                case 4: this.receiptData5.push(item);
+                                break;
+                      }
+                      i++;
+                  })
+                }               
+          });
+        },
+        selectFn(e){
+            console.log(e);
+            var json = JSON.parse(e);
+            var supplierId=json.id;
+            for(var j = 0,len=this.dictOptionsUser.length; j < len; j++) {
+                  var item = this.dictOptionsUser[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.id;
+                  if(uid==supplierId){
+                    var supplier=item.text;
+                    document.getElementById('phoneNum').innerHTML = "客户电话:"+object.phone;
+                    document.getElementById('fax').innerHTML = "客户传真:"+object.fax;
+                    document.getElementById('address').innerHTML = "交货地址:"+object.address;
+                    break;
+                  }
+            } 
+        },
+        randomNumber() {
+            const now = new Date()
+            let month = now.getMonth() + 1
+            let day = now.getDate()
+            let hour = now.getHours()
+            let minutes = now.getMinutes()
+            let seconds = now.getSeconds()
+            let r=Math.random().toString().slice(-6).toString()
+            return now.getFullYear().toString() + month.toString() + 
+                  day.toString() + hour.toString() + minutes.toString() + seconds.toString() + r
+      }
     }
   }
 </script>

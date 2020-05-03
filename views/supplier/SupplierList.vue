@@ -14,9 +14,7 @@
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('supplier')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+      <a-button type="primary" icon="edit" @click="setname()">设置公司名称</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -92,6 +90,7 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import SupplierModal from './modules/SupplierModal'
+  import {getAction} from '@/api/manage'
 
   export default {
     name: "SupplierList",
@@ -129,11 +128,21 @@
             align:"center",
             dataIndex: 'phonenum'
           },
+          {
+            title:'地址',
+            align:"center",
+            dataIndex: 'address'
+          },          
          /* {
             title:'电子邮箱',
             align:"center",
             dataIndex: 'email'
           },*/
+          {
+            title:'传真',
+            align:"center",
+            dataIndex: 'fax'
+          },
           {
             title:'备注',
             align:"center",
@@ -179,21 +188,13 @@
             align:"center",
             dataIndex: 'allneedpay'
           },
-          {
-            title:'传真',
-            align:"center",
-            dataIndex: 'fax'
-          },
+          
           {
             title:'手机',
             align:"center",
             dataIndex: 'telephone'
           },
-          {
-            title:'地址',
-            align:"center",
-            dataIndex: 'address'
-          },
+          
           {
             title:'纳税人识别号',
             align:"center",
@@ -240,6 +241,7 @@
           deleteBatch: "/supplier/supplier/deleteBatch",
           exportXlsUrl: "/supplier/supplier/exportXls",
           importExcelUrl: "supplier/supplier/importExcel",
+          editNameUrl: "/supplier/supplier/editName"
         },
         dictOptions:{},
       }
@@ -251,6 +253,16 @@
     },
     methods: {
       initDictConfig(){
+      },
+      setname(){
+        var name = prompt("请输入公司名称");
+        console.log(name);
+        getAction(this.url.editNameUrl, {email: name}).then((res) => {
+              if (res.success) {
+                  
+                }
+          });
+
       }
     }
   }
