@@ -87,6 +87,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import StorageLogModal from './modules/StorageLogModal'
   import JInput from '@/components/jeecg/JInput.vue';
+  import { colAuthFilter } from "@/utils/authFilter"
 
   export default {
     name: "StorageLogList",
@@ -95,6 +96,12 @@
       StorageLogModal,
       JInput
     },
+    created() {
+          this.disableMixinCreated=true;
+          this.columns = colAuthFilter(this.columns,'materialList:');
+          this.loadData();
+          this.initDictConfig();
+     },
     data () {
       return {
         description: 'storage管理页面',

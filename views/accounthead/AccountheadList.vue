@@ -113,12 +113,6 @@
             }
           },
           {
-            title:'类型',
-            align:"center",
-            dataIndex: 'type',
-            width:60
-          },
-          {
             title:'单据编号',
             align:"center",
             dataIndex: 'billno',
@@ -128,6 +122,11 @@
             title:'客户名称',
             align:"center",
             dataIndex: 'supplier'
+          },
+          {
+            title:'商品名称',
+            align:"center",
+            dataIndex: 'materialName'
           },
           {
             title:'合计金额',

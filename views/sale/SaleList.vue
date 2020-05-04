@@ -15,7 +15,7 @@
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1"  @click="handleAllSale"><a-icon type="plus"/>出售</a-menu-item>
+          <a-menu-item key="1"  @click="handleAllSale"><a-icon type="appstore"/>批量出售</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
@@ -179,21 +179,29 @@
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice5">{{ item5.totalprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark5">{{ item5.remark }}</td>
             </tr>
+            <tr>
+              <td colspan="2" width="100" height="30" >金额合计(大写)</td>
+              <td colspan="3" width="200" height="30" id="totalBig"></td>
+              <td colspan="2" width="100" height="30" >金额合计(小写)</td>
+              <td colspan="3" width="200" height="30" id="total"></td>
+            </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
             <div style="width: 35%;float: left">备注：请仔细核对货物型号和数量，并签字回传</div>
           </div>
           <div style="width: 100%;margin-bottom: 10px;">
             <div style="width: 35%;float: left">制单：{{realName}}</div>
+            <div style="width: 50%;float: left">收货盖章签署：</div>
           </div>
         </div>
       </div>
     </div>
     </a-card>
           <div slot="footer">
-    	            <Button @click="hideModel()">关闭</Button>
-                  <Button type="primary" @click="save()">保存</Button>
-      </div>
+                  <Button style="width: 20%;float: left" @click="calculate()">自动计算</Button>
+    	            <Button style="width: 10%;" @click="hideModel()">关闭</Button>
+                  <Button style="width: 10%;"　type="primary" @click="save()">保存</Button>
+          </div>
       </template>
             </j-modal>
           </a-col>
@@ -304,12 +312,6 @@
             width:100
           },
           {
-            title:'备注',
-            align:"center",
-            dataIndex: 'remark',
-            width:80
-          },
-          {
             title:'库存',
             align:"center",
             dataIndex: 'storage',
@@ -325,6 +327,12 @@
             title:'零售价',
             align:"center",
             dataIndex: 'retailprice',
+            width:80
+          },
+                    {
+            title:'备注',
+            align:"center",
+            dataIndex: 'remark',
             width:80
           },
          /* {
@@ -476,12 +484,7 @@
           this.modal.visible=false;
         },
         save(){
-          var id=this.receiptData[0].id;
-          var number=document.getElementById("tNumber").innerText;
-          var retailprice=document.getElementById("tRetailprice").innerText;
-          var totalprice=document.getElementById("tTotalprice").innerText;
-          var remark=document.getElementById("tRemark").innerText;
-          console.log(number+retailprice+totalprice+remark+"   "+id);
+          
           var supplierId;
           var supplier;
           try{
@@ -502,12 +505,131 @@
           //console.log(this.selectTypeValue + supplierId +supplier);
           var type=this.selectTypeValue;
           var that=this;
-          getAction(this.url.sale,{id:id,retailprice:retailprice,number:number,
-          totalprice:totalprice,remark:remark,supplierId:supplierId,supplier:supplier,
-          type:type,orderNumber:this.orderNumber}).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
+
+
+          var arr=[];
+          
+          var id=this.receiptData[0].id;
+          var number=document.getElementById("tNumber").innerText;
+          var retailprice=document.getElementById("tRetailprice").innerText;
+          var totalprice=document.getElementById("tTotalprice").innerText;
+          var remark=document.getElementById("tRemark").innerText;
+
+          var object = new Object();
+          object.orderNumber=this.orderNumber;
+          object.id=id;
+          object.number=number;
+          object.retailprice=retailprice;
+          object.totalprice=totalprice;
+          object.remark=remark;
+          object.supplierId=supplierId;
+          object.supplier=supplier;
+          object.type=type;
+          
+          arr.push(object);
+
+          if(this.receiptData2.length>0){
+          id=this.receiptData2[0].id;
+          number=document.getElementById("tNumber2").innerText;
+          retailprice=document.getElementById("tRetailprice2").innerText;
+          totalprice=document.getElementById("tTotalprice2").innerText;
+          remark=document.getElementById("tRemark2").innerText;
+
+          if(id!=null){
+
+            var object = new Object();
+            object.orderNumber=this.orderNumber;
+            object.id=id;
+            object.number=number;
+            object.retailprice=retailprice;
+            object.totalprice=totalprice;
+            object.remark=remark;
+            object.supplierId=supplierId;
+            object.supplier=supplier;
+            object.type=type;
+          
+            arr.push(object);
+
+          }
+          }
+
+          if(this.receiptData3.length>0){
+          id=this.receiptData3[0].id;
+          number=document.getElementById("tNumber3").innerText;
+          retailprice=document.getElementById("tRetailprice3").innerText;
+          totalprice=document.getElementById("tTotalprice3").innerText;
+          remark=document.getElementById("tRemark3").innerText;
+
+          if(id!=null){
+
+            var object = new Object();
+            object.orderNumber=this.orderNumber;
+            object.id=id;
+            object.number=number;
+            object.retailprice=retailprice;
+            object.totalprice=totalprice;
+            object.remark=remark;
+            object.supplierId=supplierId;
+            object.supplier=supplier;
+            object.type=type;
+          
+            arr.push(object);
+
+          }
+          }
+          if(this.receiptData4.length>0){
+          id=this.receiptData4[0].id;
+          number=document.getElementById("tNumber4").innerText;
+          retailprice=document.getElementById("tRetailprice4").innerText;
+          totalprice=document.getElementById("tTotalprice4").innerText;
+          remark=document.getElementById("tRemark4").innerText;
+
+          if(id!=null){
+
+            var object = new Object();
+            object.orderNumber=this.orderNumber;
+            object.id=id;
+            object.number=number;
+            object.retailprice=retailprice;
+            object.totalprice=totalprice;
+            object.remark=remark;
+            object.supplierId=supplierId;
+            object.supplier=supplier;
+            object.type=type;
+          
+            arr.push(object);
+
+          }
+          }
+          if(this.receiptData5>0){
+          id=this.receiptData5[0].id;
+          number=document.getElementById("tNumber5").innerText;
+          retailprice=document.getElementById("tRetailprice5").innerText;
+          totalprice=document.getElementById("tTotalprice5").innerText;
+          remark=document.getElementById("tRemark5").innerText;
+
+          if(id!=null){
+
+            var object = new Object();
+            object.orderNumber=this.orderNumber;
+            object.id=id;
+            object.number=number;
+            object.retailprice=retailprice;
+            object.totalprice=totalprice;
+            object.remark=remark;
+            object.supplierId=supplierId;
+            object.supplier=supplier;
+            object.type=type;
+          
+            arr.push(object);
+
+          }
+          }
+          
+          var formData=encodeURI(JSON.stringify(arr));
+
+          getAction(this.url.sale,{items:formData}).then((res)=>{
+              if(res.success){    that.$emit('ok');
                 this.modal.visible=false;
               }else{
                 that.$message.warning(res.message);
@@ -588,6 +710,75 @@
             let r=Math.random().toString().slice(-6).toString()
             return now.getFullYear().toString() + month.toString() + 
                   day.toString() + hour.toString() + minutes.toString() + seconds.toString() + r
+      },
+      calculate(){
+        var total=0;
+        var  number=document.getElementById("tNumber").innerText;
+        var  retailprice=document.getElementById("tRetailprice").innerText;
+        var  totalprice=number*retailprice;
+        total+=totalprice;
+        document.getElementById("tTotalprice").innerText=totalprice;
+
+        if(this.receiptData2.length>0){
+          number=document.getElementById("tNumber2").innerText;
+          retailprice=document.getElementById("tRetailprice2").innerText;
+          totalprice=number*retailprice;
+          total+=totalprice;
+          document.getElementById("tTotalprice2").innerText=totalprice;
+        }
+
+        if(this.receiptData3.length>0){
+          number=document.getElementById("tNumber3").innerText;
+          retailprice=document.getElementById("tRetailprice3").innerText;
+          totalprice=number*retailprice;
+          total+=totalprice;
+          document.getElementById("tTotalprice3").innerText=totalprice;
+        }
+
+        if(this.receiptData4.length>0){
+          number=document.getElementById("tNumber4").innerText;
+          retailprice=document.getElementById("tRetailprice4").innerText;
+          totalprice=number*retailprice;
+          total+=totalprice;
+          document.getElementById("tTotalprice4").innerText=totalprice;
+        }
+
+        if(this.receiptData5.length>0){
+          number=document.getElementById("tNumber5").innerText;
+          retailprice=document.getElementById("tRetailprice5").innerText;
+          totalprice=number*retailprice;
+          total+=totalprice;
+          document.getElementById("tTotalprice5").innerText=totalprice;
+        }
+
+        const fraction = ['角', '分'];
+  const digit = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
+  const unit = [
+    ['元', '万', '亿'],
+    ['', '拾', '佰', '仟'],
+  ];
+  let num = Math.abs(total);
+  let s = '';
+  fraction.forEach((item, index) => {
+    s += (digit[Math.floor(num * 10 * (10 ** index)) % 10] + item).replace(/零./, '');
+  });
+  s = s || '整';
+  num = Math.floor(num);
+  for (let i = 0; i < unit[0].length && num > 0; i += 1) {
+    let p = '';
+    for (let j = 0; j < unit[1].length && num > 0; j += 1) {
+      p = digit[num % 10] + unit[1][j] + p;
+      num = Math.floor(num / 10);
+    }
+    s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
+  }
+
+        var totalBig=s.replace(/(零.)*零元/, '元').replace(/(零.)+/g, '零').replace(/^整$/, '零元整');
+
+        document.getElementById("totalBig").innerText=totalBig;
+        document.getElementById("total").innerText=total;
+
+
       }
     }
   }
