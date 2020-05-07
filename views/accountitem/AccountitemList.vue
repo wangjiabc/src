@@ -2,11 +2,12 @@
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
-        <a-row :gutter="24">
-          <j-input placeholder="请输入账号模糊查询" v-model="queryParam.materialName"></j-input>
-        </a-row>
-      </a-form>
+      <a-form-item layout="inline" @keyup.enter.native="searchQuery">
+          <j-input placeholder="请输入名字模糊查询" v-model="queryParam.materialName"></j-input>
+      </a-form-item>
+        <a-form-item layout="inline" @keyup.enter.native="searchQuery">
+          <j-input placeholder="请输入订单号模糊查询" v-model="queryParam.billno"></j-input>
+      </a-form-item>
     </div>
     <!-- 查询区域-END -->
     

@@ -717,14 +717,14 @@
         var  retailprice=document.getElementById("tRetailprice").innerText;
         var  totalprice=number*retailprice;
         total+=totalprice;
-        document.getElementById("tTotalprice").innerText=totalprice;
+        document.getElementById("tTotalprice").innerText=totalprice.toFixed(2);
 
         if(this.receiptData2.length>0){
           number=document.getElementById("tNumber2").innerText;
           retailprice=document.getElementById("tRetailprice2").innerText;
           totalprice=number*retailprice;
           total+=totalprice;
-          document.getElementById("tTotalprice2").innerText=totalprice;
+          document.getElementById("tTotalprice2").innerText=totalprice.toFixed(2);
         }
 
         if(this.receiptData3.length>0){
@@ -732,7 +732,7 @@
           retailprice=document.getElementById("tRetailprice3").innerText;
           totalprice=number*retailprice;
           total+=totalprice;
-          document.getElementById("tTotalprice3").innerText=totalprice;
+          document.getElementById("tTotalprice3").innerText=totalprice.toFixed(2);
         }
 
         if(this.receiptData4.length>0){
@@ -740,7 +740,7 @@
           retailprice=document.getElementById("tRetailprice4").innerText;
           totalprice=number*retailprice;
           total+=totalprice;
-          document.getElementById("tTotalprice4").innerText=totalprice;
+          document.getElementById("tTotalprice4").innerText=totalprice.toFixed(2);
         }
 
         if(this.receiptData5.length>0){
@@ -748,7 +748,7 @@
           retailprice=document.getElementById("tRetailprice5").innerText;
           totalprice=number*retailprice;
           total+=totalprice;
-          document.getElementById("tTotalprice5").innerText=totalprice;
+          document.getElementById("tTotalprice5").innerText=totalprice.toFixed(2);
         }
 
         const fraction = ['角', '分'];
@@ -776,7 +776,7 @@
         var totalBig=s.replace(/(零.)*零元/, '元').replace(/(零.)+/g, '零').replace(/^整$/, '零元整');
 
         document.getElementById("totalBig").innerText=totalBig;
-        document.getElementById("total").innerText=total;
+        document.getElementById("total").innerText=total.toFixed(2);
 
 
       }

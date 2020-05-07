@@ -129,6 +129,11 @@
             dataIndex: 'materialName'
           },
           {
+            title:'数量',
+            align:"center",
+            dataIndex: 'count'
+          },
+          {
             title:'合计金额',
             align:"center",
             dataIndex: 'totalprice'

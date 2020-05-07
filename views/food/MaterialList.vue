@@ -18,6 +18,7 @@
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-button type="primary" icon="plus" @click="batchCompages">组合</a-button>
+      <a type="primary" style="margin-right: 20px;margin-top: 10px;float:right" id="allCost" >库存总额</a>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" v-has="'material:storageAdd'" @click="handleStorageAdd"><a-icon type="plus"/>添加库存</a-menu-item>
@@ -223,6 +224,14 @@
           this.loadData();
           this.initDictConfig();
      },
+    mounted(){
+         getAction(this.url.getAllCostUrl, {}).then((res) => { 
+           if (res.success) {
+              console.log(res.result);
+              document.getElementById('allCost').innerHTML ="库存总金额:"+res.result.ALLCOST;
+           }
+         });
+    },
     data () {
       return {       
         items: [],
@@ -318,7 +327,8 @@
           queryByIdsUrl: "food/material/queryByIds",
           storageAddUrl: "food/material/storageAdd",
           querydDetailByIdUrl: "food/material/querydDetailById",
-          queryByMaterialCompagesIdUrl: "/compages/materialCompages/queryByMaterialCompagesId"
+          queryByMaterialCompagesIdUrl: "/compages/materialCompages/queryByMaterialCompagesId",
+          getAllCostUrl:"storageLog/storageLog/getAllCost"
         },
         dictOptions:{},
         tableScroll:{x :10*80+50}
