@@ -629,7 +629,9 @@
           var formData=encodeURI(JSON.stringify(arr));
 
           getAction(this.url.sale,{items:formData}).then((res)=>{
-              if(res.success){    that.$emit('ok');
+              if(res.success){    
+                that.$emit('ok');
+                that.$message.success(res.message);
                 this.modal.visible=false;
               }else{
                 that.$message.warning(res.message);
