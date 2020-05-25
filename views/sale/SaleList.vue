@@ -115,7 +115,7 @@
           </div>
           <div style="width: 100%;">
             <div style="width: 40%;float: left">客户名称 : 
-              <a  style="width: 30%;display: inline-block">
+              <a  style="width: 80%;display: inline-block">
                 <j-search-select-tag　placeholder=""
                       v-model="selectUserValue"　:dictOptions="dictOptionsUser"　@change="selectFn($event)">
                 </j-search-select-tag>

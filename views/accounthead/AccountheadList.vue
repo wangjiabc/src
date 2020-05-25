@@ -112,7 +112,7 @@
             </div>
           </div>
           <div style="width: 100%;">
-            <div style="width: 40%;float: left">客户名称:{{realName}}</div>
+            <div style="width: 40%;float: left">客户名称:{{supplier}}</div>
             <div style="width: 40%;float: left">收款类型:{{typeName}}</div>
             <div style="width: 20%;float: right">收款日期:{{date}}</div>
           </div>
@@ -216,6 +216,7 @@
         receiptData3: [],
         receiptData4: [],
         receiptData5: [],
+        supplier:"",
         realName:"",
         orderNumber:"",
         typeName:"",
@@ -350,6 +351,7 @@
                   var result=res.result;
                   this.totalBig=result.ALLTotalprice;
                   this.realName=result.realname;
+                  this.supplier=result.supplier;
                   this.total=result.allTotalprice;
                   this.address=result.address;
                   this.phoneNum=result.phone;
