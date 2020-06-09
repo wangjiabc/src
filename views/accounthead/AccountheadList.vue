@@ -317,7 +317,7 @@
           }
         ],
         url: {
-          list: "/accounthead/accounthead/list",
+          list: "/accounthead/accounthead/listUnite",
           delete: "/accounthead/accounthead/delete",
           deleteBatch: "/accounthead/accounthead/deleteBatch",
           exportXlsUrl: "/accounthead/accounthead/exportXls",
