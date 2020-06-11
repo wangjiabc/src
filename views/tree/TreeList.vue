@@ -9,7 +9,13 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+    <ul>
+        <li @click="num=0">1</li>
+        <li @click="num=1">2</li>
+    </ul>
+
+    <div class="content-right">
+      <div v-show="num==0">
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="setNew()" type="primary" icon="plus">新增</a-button>
@@ -63,14 +69,14 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="setPut(record)">add</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                <a-popconfirm title="确定删除吗?" @confirm="() => del(record)">
                   <a>删除</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -80,7 +86,14 @@
 
       </a-table>
     </div>
+      </div>
+    </div>
 
+  <div v-show="num==1">
+    <div>
+      <treeComponet></treeComponet>
+    </div>
+  </div>
     <tree-modal ref="modalForm" @ok="modalFormOk"></tree-modal>
   </a-card>
 </template>
@@ -91,11 +104,14 @@
   import TreeModal from './modules/TreeModal'
   import {getAction} from '@/api/manage'
 
+  import treeComponet from './Tree2'
+
   export default {
     name: "TreeList",
     mixins:[JeecgListMixin],
     components: {
-      TreeModal
+      TreeModal,
+      treeComponet
     },
     data () {
       return {
@@ -133,6 +149,11 @@
             dataIndex: 'level'
           },
           {
+            title:'id',
+            align:"center",
+            dataIndex: 'id'
+          },
+          {
             title:'pId',
             align:"center",
             dataIndex: 'pid'
@@ -145,15 +166,17 @@
           }
         ],
         url: {
-          list: "/tree/tree/list",
+          list: "/tree/tree/list?column=createTime&order=asc",
           delete: "/tree/tree/delete",
           deleteBatch: "/tree/tree/deleteBatch",
           exportXlsUrl: "/tree/tree/exportXls",
           importExcelUrl: "tree/tree/importExcel",
           new:"/tree/tree/insertTree",
           put:"/tree/tree/addTree",
+          delChildTree:"/tree/tree/delChildTree"
         },
         dictOptions:{},
+        num:0,
       }
     },
     computed: {
@@ -165,16 +188,44 @@
       initDictConfig(){
       },
       setNew(){
+        var that=this;
         getAction(this.url.new,
            {userName:'aaaaa',pId:1}).then((res) => {
-              if (res.success) {}
+             console.log(res);
+              if (res.success) {
+                    this.$message.success(res.message);
+                    that.loadData();
+
+              }
            });
 
       },
-      setPut(){
-          getAction(this.url.put,
-           {userName:'aaaaa',pId:1}).then((res) => {
-              if (res.success) {}
+      setPut(record){
+          
+        var that=this;
+        var name = prompt("请输入名称");
+        console.log(name);
+        getAction(this.url.put,
+           {userName:name,pId:record.id}).then((res) => {
+             console.log(res);
+              if (res.success) {
+                this.$message.success(res.message);
+                that.loadData();
+              }
+           });
+
+      },
+      del(record){
+
+        var that=this;
+        getAction(this.url.delChildTree,
+           {id:record.id}).then((res) => {
+             console.log(res);
+              if (res.success) {
+                    this.$message.success(res.message);
+                    that.loadData();
+
+              }
            });
 
       }

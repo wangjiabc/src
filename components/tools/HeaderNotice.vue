@@ -203,7 +203,7 @@
         var userId = store.getters.userInfo.id;
         var url = window._CONFIG['domianURL'].replace("https://","wss://").replace("http://","ws://")+"/websocket/"+userId;
         console.log(url);
-        this.websock = new WebSocket(url);
+        this.websock = new WebSocket("ws://223.86.150.188:8891/jeecg-boot/websocket");
         this.websock.onopen = this.websocketOnopen;
         this.websock.onerror = this.websocketOnerror;
         this.websock.onmessage = this.websocketOnmessage;
