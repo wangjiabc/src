@@ -90,9 +90,9 @@
     </div>
 
   <div v-show="num==1">
-    <div>
-      <treeComponet></treeComponet>
-    </div>
+    <template>
+      
+    </template>
   </div>
     <tree-modal ref="modalForm" @ok="modalFormOk"></tree-modal>
   </a-card>
@@ -104,14 +104,11 @@
   import TreeModal from './modules/TreeModal'
   import {getAction} from '@/api/manage'
 
-  import treeComponet from './Tree2'
-
   export default {
     name: "TreeList",
     mixins:[JeecgListMixin],
     components: {
-      TreeModal,
-      treeComponet
+      TreeModal
     },
     data () {
       return {
