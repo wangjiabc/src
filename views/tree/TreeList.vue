@@ -18,8 +18,8 @@
       <div v-show="num==0">
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="setNew()" type="primary" icon="plus">新增</a-button>
-      <a-button @click="setPut()" type="primary" icon="plus">add</a-button>
+     <!-- <a-button @click="setNew()" type="primary" icon="plus">新增</a-button> -->
+      <a-button @click="addPut()" type="primary" icon="plus">add</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -170,6 +170,7 @@
           importExcelUrl: "tree/tree/importExcel",
           new:"/tree/tree/insertTree",
           put:"/tree/tree/addTree",
+          addPut:"/tree/tree/addRootTree",
           delChildTree:"/tree/tree/delChildTree"
         },
         dictOptions:{},
@@ -211,6 +212,19 @@
               }
            });
 
+      },
+      addPut(){
+        var that=this;
+        var name = prompt("请输入名称");
+        console.log(name);
+         getAction(this.url.addPut,
+           {userName:name}).then((res) => {
+             console.log(res);
+              if (res.success) {
+                this.$message.success(res.message);
+                that.loadData();
+              }
+           });
       },
       del(record){
 
