@@ -19,7 +19,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
      <!-- <a-button @click="setNew()" type="primary" icon="plus">新增</a-button> -->
-      <a-button @click="addPut()" type="primary" icon="plus">add</a-button>
+      <a-button @click="addPut()" type="primary" icon="plus">新增目录</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -69,7 +69,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="setPut(record)">add</a>
+          <a @click="setPut(record)">添加子目录</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -126,11 +126,11 @@
             }
           },
           {
-            title:'username',
+            title:'名称',
             align:"center",
             dataIndex: 'username'
           },
-          {
+       /*   {
             title:'lft',
             align:"center",
             dataIndex: 'lft'
@@ -139,9 +139,9 @@
             title:'rgt',
             align:"center",
             dataIndex: 'rgt'
-          },
+          },*/
           {
-            title:'level',
+            title:'层级',
             align:"center",
             dataIndex: 'level'
           },
@@ -151,7 +151,7 @@
             dataIndex: 'id'
           },
           {
-            title:'pId',
+            title:'上级id',
             align:"center",
             dataIndex: 'pid'
           },
