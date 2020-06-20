@@ -1,15 +1,5 @@
 <template>
   <a-card :bordered="false">
-    <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
-        <a-row :gutter="24">
-            <j-input placeholder="请输入账号模糊查询" v-model="queryParam.detail"></j-input>
-        </a-row>
-      </a-form>
-    </div>
-    <!-- 查询区域-END -->
-    
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button type="primary" icon="download" @click="handleExportXls('accounthead')">导出</a-button>
@@ -20,6 +10,37 @@
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
     </div>
+    <!-- 查询区域 -->
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline" @keyup.enter.native="searchQuery">
+        <a-row :gutter="24">
+        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="名称">
+              <j-input placeholder="请输入账号模糊查询" v-model="queryParam.materialName"></j-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="统计开始时间">
+              <j-date placeholder="请选择统计开始时间" v-model="queryParam.startDate"></j-date>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="统计结束时间">
+              <j-date placeholder="请选择统计结束时间" v-model="queryParam.endDate"></j-date>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    <!-- 查询区域-END -->
+    
+    
 
     <!-- table区域-begin -->
     <div>
@@ -199,6 +220,7 @@
   import {getAction} from '@/api/manage'
   import Print from 'vue-print-nb'
   import Vue from 'vue'
+  import JDate from '@/components/jeecg/JDate.vue'
   Vue.use(Print); 
 
   export default {
@@ -206,7 +228,8 @@
     mixins:[JeecgListMixin],
     components: {
       AccountheadModal,
-      JInput
+      JInput,
+      JDate
     },
     data () {
       return {
@@ -328,6 +351,10 @@
         tableScroll:{x :20*80+50}
       }
     },
+    created() {
+     // this.queryParam.endDate = this.getTime()
+    // this.queryParam.startDate= this.endTime()
+    },
     computed: {
       importExcelUrl: function(){
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
@@ -335,6 +362,51 @@
     },
     methods: {
       initDictConfig(){
+      },
+     /* searchQuery() {
+
+         // this.$refs.queryParam = this.queryParam
+         var search="";
+         if(this.queryParam.startTime!=null)
+            search+="&startDate="+this.queryParam.startTime;
+
+
+         getAction(this.url.list+search, this.queryParam).then(res => {
+          this.dataSource = res.result.records
+          this.ipagination.total = res.result.total;
+        })
+      },*/
+      searchReset() {
+        this.queryParam.endDate = this.getTime();
+        this.queryParam.stataionName = ''
+        this.queryParam.startDate = ''
+        if (this.queryParam.type == 1) {
+          this.$refs.oilStatistcs.queryParam = this.queryParam
+          this.$refs.oilStatistcs.getInfo()
+        } else {
+          this.$refs.goodsStatistcs.queryParam = this.queryParam
+          this.$refs.goodsStatistcs.getInfo()
+        }
+      },
+      getTime(){
+        let date = new Date();
+        let month = date.getMonth()+1;
+        if(month<10) month = '0'+month
+        let day = date.getDate();
+        if(day<10) day = '0'+day
+        let time = date.getFullYear() + '-' + month + '-' + day;
+        return time;
+      },
+      endTime(){
+        let date = new Date();
+        date=date.getTime()-604800000;
+        let startTime=new Date(date)
+        let month = startTime.getMonth()+1;
+        if(month<10) month = '0'+month
+        let day = startTime.getDate();
+        if(day<10) day = '0'+day
+        let time = startTime.getFullYear() + '-' + month+ '-' + day;
+        return time;
       },
       printer(record){
         this.modal.visible=true;
