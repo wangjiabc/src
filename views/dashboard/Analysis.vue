@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import IndexChart from '../food/MaterialList'
+  import IndexChart from '../sale/SaleList'
   import IndexTask from "./IndexTask"
   import IndexBdc from './IndexBdc'
 

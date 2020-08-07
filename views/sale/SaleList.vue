@@ -2,9 +2,26 @@
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
+      <a-row :gutter="20">
+      <a-col :sm="50" :md="14" :xl="10" :style="{ marginBottom: '20px' }">
+        <chart-card :loading="loading" title="扫码出售" class="img3">
+          <a-input style='width: 90%;ime-mode:disabled' @pressEnter="showModal" @change='onchange' v-model="openId" :disabled="false"></a-input>
+        </chart-card>
+      </a-col>
+    </a-row>
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-             <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
+        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-item label="名称">
+            <j-input placeholder="请输入名字模糊查询" v-model="queryParam.name"></j-input>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -220,16 +237,45 @@
   import {getAction} from '@/api/manage'
   import Print from 'vue-print-nb'
   import Vue from 'vue'
+  import ChartCard from '@/components/ChartCard'
+  import ACol from 'ant-design-vue/es/grid/Col'
+  import ATooltip from 'ant-design-vue/es/tooltip/Tooltip'
+  import MiniArea from '@/components/chart/MiniArea'
+  import MiniProgress from '@/components/chart/MiniProgress'
+  import LineChartMultid from '@/components/chart/LineChartMultid'
+  import HeadInfo from '@/components/tools/HeadInfo.vue'
+  import Trend from '@/components/Trend'
+  import JDate from '@/components/jeecg/JDate'
+  import store from '@/store/'
   Vue.use(Print); 
   import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
-
+  import {
+    getLoginfo,
+    getVisitInfo,
+    loadOilHistory,
+    chartList,
+    queryStaNoticeVo,
+    updateOrderTableStatus,
+    getNotice,
+    getUserGetOrder,
+    postChangeGood
+  } from '@/api/api'
   export default {
     name: "SaleList",
     mixins:[JeecgListMixin],
     components: {
       MaterialModal,
       JInput,
-      JSearchSelectTag
+      JSearchSelectTag,
+      ATooltip,
+      ACol,
+      ChartCard,
+      MiniArea,
+      MiniProgress,
+      Trend,
+      LineChartMultid,
+      HeadInfo,
+      JDate
     },
     created() {
           this.disableMixinCreated=true;
@@ -266,7 +312,7 @@
                   this.realName=res.result.realname;
                 }
               });
-    },
+    },   
     data () {
       return {
         description: 'material管理页面',
@@ -294,6 +340,7 @@
         email:"",
         realName:"",
         orderNumber:"",
+        openId: '',
         columns: [
           {
             title: '#',
@@ -482,6 +529,43 @@
         },
         hideModel(){
           this.modal.visible=false;
+        },
+        onchange() {
+
+        },
+        showModal() {
+        if (this.openId == '') {
+          alter("请录入客户信息!")
+        } else {
+          if (this.openId.endsWith('_')) {
+            this.openId = this.openId.substring(0, this.openId.length - 1)
+           }
+
+        var that = this;
+        this.modal.visible=true;
+        var ids = "";
+        ids += this.openId + ",";
+        this.receiptData=[];
+        this.orderNumber=this.randomNumber();
+        getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+              console.log(res.result);
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.retailprice= r.retailprice;
+                      item.number=1;
+                      item.totalprice=item.retailprice*item.number;
+                    this.receiptData.push(item);
+                  })
+                }
+                console.log(this.receiptData);
+          });
+
+          this.openId=''
+
+         }
         },
         save(){
           
@@ -823,6 +907,118 @@
   .title{
     font-size: 30px;
     font-variant: normal;
+  }
+
+   .img1 {
+    background-image: url("../../assets/index1.png");
+  }
+
+  .img2 {
+    background-image: url("../../assets/index2.png");
+  }
+
+  .img3 {
+    background-image: url("../../assets/index3.png");
+  }
+
+  .circle-cust {
+    position: relative;
+    top: 28px;
+    left: -100%;
+  }
+
+  .modal-info {
+    min-height: 900px !important;
+  }
+
+  .orderInfo {
+    display: flex;
+    line-height: 2;
+
+  }
+
+  .orderInfo .info-title {
+    width: 20%;
+  }
+
+  .orderInfo .info-content {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .orderInfo .info-content .box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 50%;
+  }
+
+  .orderInfo .info-content .box .title {
+    width: 20%;
+  }
+
+  .orderInfo .info-content .box .content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 70%;
+    text-align: right;
+  }
+
+  .xian {
+    width: 100%;
+    height: 1px;
+    margin: 5px 0;
+    background: #ccc;
+  }
+
+  .order-details .title {
+    line-height: 2;
+  }
+
+  .text {
+    color: #2990ff;
+    font-size: 15px;
+  }
+
+  .notice {
+    margin-bottom: 5px;
+  }
+
+  .ant-modal-content {}
+
+  .salesCard {
+    width: 100%;
+    height: 300px;
+  }
+
+  .time-box {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  .change-box {
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .change-box .change-text {
+    width: 30%;
+    vertical-align: center;
+  }
+
+  .right-three {
+    width: 30px;
+    height: 30px;
+    float: right;
+  }
+
+  .right-three img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-card-box {
+    margin: 0 auto;
   }
 
 </style>
