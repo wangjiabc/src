@@ -3,6 +3,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button type="primary" icon="download" @click="handleExportXls('accounthead')">导出</a-button>
+      <a type="primary" style="margin-right: 20px;margin-top: 10px;float:right" id="allCost" >销售总额</a>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -14,22 +15,52 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+        <a-col :xl="4" :lg="5" :md="8" :sm="20">
             <a-form-item label="名称">
               <j-input placeholder="请输入账号模糊查询" v-model="queryParam.materialName"></j-input>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="统计开始时间">
-              <j-date placeholder="请选择统计开始时间" v-model="queryParam.startDate"></j-date>
+
+          <a-col :xl="5" :lg="5" :md="8" :sm="20">
+            <a-form-item label="订单号">
+          <j-input placeholder="请输入订单号模糊查询" v-model="queryParam.billno"></j-input>
+          </a-form-item>
+          </a-col>
+
+          <a-col :xl="5" :lg="5" :md="8" :sm="20">
+            <a-form-item label="选择客户" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+
+              <select v-model="selectUserValue" @change="selectFn">
+            <option :value="list.text" v-for="list in dictOptionsUser">{{list.text}}</option>
+            </select>
+            
+          </a-form-item>
+          </a-col>
+
+          <a-col :xl="3" :lg="3" :md="8" :sm="24">
+            <a-form-item label="收款">
+              <a-select  @change='forAllChange'>
+                <a-select-option value=''>全部</a-select-option>
+                <a-select-option value='1'>已收</a-select-option>
+                <a-select-option value='0'>未收</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="统计结束时间">
-              <j-date placeholder="请选择统计结束时间" v-model="queryParam.endDate"></j-date>
+
+        </a-row>
+
+      <a-row :gutter="24">
+          <a-col :xl="5" :lg="5" :md="8" :sm="20">
+            <a-form-item label="开始时间">
+              <j-date placeholder="请选择开始时间" v-model="queryParam.startDate"></j-date>
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="5" :lg="5" :md="8" :sm="20">
+            <a-form-item label="结束时间">
+              <j-date placeholder="请选择结束时间" v-model="queryParam.endDate"></j-date>
+            </a-form-item>
+          </a-col>
+          <a-col :xl="5" :lg="5" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -47,6 +78,7 @@
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+        
       </div>
 
       <a-table
@@ -221,6 +253,7 @@
   import Print from 'vue-print-nb'
   import Vue from 'vue'
   import JDate from '@/components/jeecg/JDate.vue'
+  import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
   Vue.use(Print); 
 
   export default {
@@ -229,7 +262,41 @@
     components: {
       AccountheadModal,
       JInput,
+      JSearchSelectTag,
       JDate
+    },
+    mounted(){
+         
+         getAction(this.url.getAllAccountUrl, {}).then((res) => { 
+           if (res.success) {
+              console.log(res.result);
+              document.getElementById('allCost').innerHTML ="销售总金额:"+res.result.ALLACCOUNT;
+           }
+         });
+
+         getAction(this.url.selectGroupUserUrl, {}).then((res) => {             
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    console.log("res===="+r);
+                    var item = new Object();
+                      //item.id=r.ID;
+                      item.text=r.SUPPLIER;
+                      //item.value = r.PHONENUM;
+                      var object = new Object();
+                      object.phone=r.PHONENUM;
+                      object.id=r.ID;
+                      object.address=r.ADDRESS;
+                      object.fax=r.FAX;
+                      if(r.EMAIL!=null){
+                          this.email=r.EMAIL;
+                      }
+                      item.value=JSON.stringify(object); 
+                    this.dictOptionsUser.push(item);
+                    
+                  })
+                }
+                console.log("dictOptionsUser="+this.dictOptionsUser);
+          });
     },
     data () {
       return {
@@ -250,6 +317,17 @@
         fax:"",
         totalBig:"",
         total:"",
+        dictOptionsUser:[],
+        selectUserValue:"",
+        selectedRole:[],
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 5 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 },
+        },
         modal: {
             visible: false,
             fullscreen: false,
@@ -295,7 +373,7 @@
           {
             title:'单据日期',
             align:"center",
-            dataIndex: 'billtime',
+            dataIndex: 'createTime',
             customRender:function (text) {
               return !text?"":(text.length>10?text.substr(0,10):text)
             }
@@ -318,14 +396,6 @@
             dataIndex: 'remark'
           },
           {
-            title:'创建日期',
-            align:"center",
-            dataIndex: 'createTime',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
-          },
-          {
             title:'创建人登录名称',
             align:"center",
             dataIndex: 'createBy'
@@ -346,6 +416,8 @@
           exportXlsUrl: "/accounthead/accounthead/exportXls",
           importExcelUrl: "accounthead/accounthead/importExcel",
           queryByIdsUrl: "accounthead/accounthead/queryById",
+          getAllAccountUrl:"/accounthead/accounthead/getAllAccount",
+          selectGroupUserUrl: "supplier/supplier/selectGroupUser"
         },
         dictOptions:{},
         tableScroll:{x :20*80+50}
@@ -363,20 +435,31 @@
     methods: {
       initDictConfig(){
       },
-     /* searchQuery() {
+      searchQuery() {
 
-         // this.$refs.queryParam = this.queryParam
+        this.$refs.queryParam = this.queryParam
          var search="";
-         if(this.queryParam.startTime!=null)
-            search+="&startDate="+this.queryParam.startTime;
+         if(this.queryParam.startDate!=null)
+            search+="&startDate="+this.queryParam.startDate;
 
+        console.log("queryParam="+JSON.stringify(this.queryParam));
+        console.log("search="+this.queryParam.startDate);
 
-         getAction(this.url.list+search, this.queryParam).then(res => {
+        
+         getAction(this.url.list, this.queryParam).then(res => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total;
         })
-      },*/
-      searchReset() {
+        
+         getAction(this.url.getAllAccountUrl, this.queryParam).then((res) => { 
+           if (res.success) {
+              console.log(res.result);
+              document.getElementById('allCost').innerHTML ="销售总金额:"+res.result.ALLACCOUNT;
+           }
+         });
+
+      },
+     /* searchReset() {
         this.queryParam.endDate = this.getTime();
         this.queryParam.stataionName = ''
         this.queryParam.startDate = ''
@@ -387,7 +470,7 @@
           this.$refs.goodsStatistcs.queryParam = this.queryParam
           this.$refs.goodsStatistcs.getInfo()
         }
-      },
+      },*/
       getTime(){
         let date = new Date();
         let month = date.getMonth()+1;
@@ -456,6 +539,25 @@
                 }               
           });
 
+      },
+      selectFn(e){
+            console.log(e);
+            console.log(e.target.selectedIndex);
+            console.log(e.target.value);
+            for(var j = 0,len=this.dictOptionsUser.length; j < len; j++) {
+                  var item = this.dictOptionsUser[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.id;
+                  if(j==e.target.selectedIndex){
+                    this.queryParam.supplierId=uid;                  
+                    break;
+                  }
+            } 
+            
+            console.log(this.queryParam);
+        },
+      forAllChange(value){
+       this.queryParam.income=value
       }
     }
   }
