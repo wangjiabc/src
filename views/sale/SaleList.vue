@@ -608,8 +608,10 @@
           object.remark=remark;
           object.supplierId=supplierId;
           object.supplier=supplier;
-          object.type=type;
-          
+          if(type!=null&&type!=""){
+            object.type=type;
+            object.income=1;
+          }
           arr.push(object);
 
           if(this.receiptData2.length>0){

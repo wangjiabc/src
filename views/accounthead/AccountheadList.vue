@@ -27,18 +27,10 @@
           </a-form-item>
           </a-col>
 
-          <a-col :xl="5" :lg="5" :md="8" :sm="20">
-            <a-form-item label="选择客户" :labelCol="labelCol" :wrapperCol="wrapperCol" >
-
-              <select v-model="selectUserValue" @change="selectFn">
-            <option :value="list.text" v-for="list in dictOptionsUser">{{list.text}}</option>
-            </select>
-            
-          </a-form-item>
-          </a-col>
+          
 
           <a-col :xl="3" :lg="3" :md="8" :sm="24">
-            <a-form-item label="收款">
+            <a-form-item label="是否收款">
               <a-select  @change='forAllChange'>
                 <a-select-option value=''>全部</a-select-option>
                 <a-select-option value='1'>已收</a-select-option>
@@ -50,6 +42,15 @@
         </a-row>
 
       <a-row :gutter="24">
+        <a-col :xl="4" :lg="5" :md="8" :sm="20">
+            <a-form-item label="选择客户" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+
+              <select v-model="selectUserValue" @change="selectFn">
+            <option :value="list.text" v-for="list in dictOptionsUser">{{list.text}}</option>
+            </select>
+            
+          </a-form-item>
+          </a-col>
           <a-col :xl="5" :lg="5" :md="8" :sm="20">
             <a-form-item label="开始时间">
               <j-date placeholder="请选择开始时间" v-model="queryParam.startDate"></j-date>
@@ -451,6 +452,9 @@
           this.ipagination.total = res.result.total;
         })
         
+          this.queryParam.column="createTime";
+          this.queryParam.order="desc";
+
          getAction(this.url.getAllAccountUrl, this.queryParam).then((res) => { 
            if (res.success) {
               console.log(res.result);
