@@ -45,11 +45,11 @@ import {getAction} from '@/api/manage'
 }*/
 
 
-
 import * as d3 from 'd3'
 export default {
     name: 'Tree2',
     dataset:{},
+    dictOptionsUser:{},
     data() {
         return {
             id: '',
@@ -61,12 +61,13 @@ export default {
             links: [],
             dTreeData: null,
             transform: null,
-            margin: { top: 20, right: 90, bottom: 30, left: 90 }
+            margin: { top: 20, right: 90, bottom: 30, left: 90 },
+            dictOptionsUser:{}            
         }
     },
 
     methods: {
-
+        
         uuid () {
             function s4 () {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -128,6 +129,7 @@ clickNode (d) {
          * @description 数据与Dom进行绑定
          */
         update (source) {
+            var data=source.dictOptionsUser;
             this.getNodesAndLinks()
             this.nodes.forEach(d => { 
                 d.y = d.depth * 180
@@ -155,7 +157,21 @@ clickNode (d) {
                 .attr("x", function(d) { return d.children || d._children ? -15 : 15; })
                 .attr("dy", ".35em")
                 .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-                .text(function(d) { return d.data.name })
+                .text(function(d) { 
+                    var name=d.data.name;
+                    
+                    console.log("data="+data);
+                    for(let key in data){
+                        if(key==name){
+                            var count=0;
+                            if(data[key]!=null&&data[key]!="null")
+                                count=data[key];
+                            name+="( 数量:"+count+")";
+                            continue;
+                        }
+                    }
+                    return name; }
+                    )
                 .style("fill-opacity", 1e-6);
             // Transition nodes to their new position.
             let nodeUpdate = nodeEnter.merge(node)
@@ -256,11 +272,25 @@ clickNode (d) {
         container.transition().duration(750).call(this.zoom.transform, transform)
         svg.call(this.zoom)
         this.root = this.getRoot(dataset)
-        this.update(this.root)
+
+         getAction("tree/tree/selectCountByCataLog", {}).then((res) => {             
+
+                this.dictOptionsUser=res.result;
+              
+                console.log("root="+this.root);
+                this.root.dictOptionsUser=res.result;
+                this.update(this.root);
+                console.log("root2="+this.root);
+                console.log("dictOptionsUser="+this.dictOptionsUser);
+          });
+
+        
 
               
         });
         
+        
+   
 
     },
     computed: {

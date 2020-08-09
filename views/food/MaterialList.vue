@@ -4,11 +4,38 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="名称">
             <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
             </a-form-item>
           </a-col>
+
+          <a-col :xl="3" :lg="3" :md="8" :sm="24">
+            <a-form-item label="库存">
+              <a-select  @change='forAllChange'>
+                <a-select-option value=''>全部</a-select-option>
+                <a-select-option value='1'>有库存</a-select-option>
+                <a-select-option value='0'>无库存</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="4" :lg="7" :md="8" :sm="24">
+            <a-form-item label="库存数量">
+            <j-input placeholder="请输入小于库存数量" v-model="queryParam.storagenumber"></j-input>
+            </a-form-item>
+          </a-col>
+
+          <a-col :xl="3" :lg="3" :md="8" :sm="24">
+            <a-form-item label="是否组合">
+              <a-select  @change='forAllChange'>
+                <a-select-option value=''>全部</a-select-option>
+                <a-select-option value='1'>组合</a-select-option>
+                <a-select-option value='0'>单件</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>

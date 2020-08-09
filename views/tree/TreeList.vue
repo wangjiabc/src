@@ -8,11 +8,6 @@
         </a-row>
       </a-form>
     </div>
-    <!-- 查询区域-END -->
-    <ul>
-        <li @click="num=0">1</li>
-        <li @click="num=1">2</li>
-    </ul>
 
     <div class="content-right">
       <div v-show="num==0">
