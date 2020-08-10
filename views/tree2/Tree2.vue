@@ -166,7 +166,7 @@ clickNode (d) {
                             var count=0;
                             if(data[key]!=null&&data[key]!="null")
                                 count=data[key];
-                            name+="( 数量:"+count+")";
+                            name+="("+count+")";
                             continue;
                         }
                     }

@@ -4,6 +4,17 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+
+          <a-col :xl="4" :lg="5" :md="8" :sm="20">
+            <a-form-item label="选择分类" >
+
+              <select v-model="selectUserValue" @change="selectFn">
+            <option :value="list.text" v-for="list in dictOptionsUser">{{list.text}}</option>
+            </select>
+            
+          </a-form-item>
+          </a-col>
+
           <a-col :xl="4" :lg="7" :md="8" :sm="24">
             <a-form-item label="名称">
             <j-input placeholder="请输入账号模糊查询" v-model="queryParam.name"></j-input>
@@ -20,15 +31,9 @@
             </a-form-item>
           </a-col>
 
-          <a-col :xl="4" :lg="7" :md="8" :sm="24">
-            <a-form-item label="库存数量">
-            <j-input placeholder="请输入小于库存数量" v-model="queryParam.storagenumber"></j-input>
-            </a-form-item>
-          </a-col>
-
           <a-col :xl="3" :lg="3" :md="8" :sm="24">
             <a-form-item label="是否组合">
-              <a-select  @change='forAllChange'>
+              <a-select  @change='forAllChange2'>
                 <a-select-option value=''>全部</a-select-option>
                 <a-select-option value='1'>组合</a-select-option>
                 <a-select-option value='0'>单件</a-select-option>
@@ -268,6 +273,28 @@
               document.getElementById('allCost').innerHTML ="库存总金额:"+res.result.ALLCOST;
            }
          });
+
+         getAction("tree/tree/selectNotChilde", {}).then((res) => {             
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    console.log("res===="+r);
+                    var item = new Object();
+                      //item.id=r.ID;
+                      item.text=r.username;
+                      //item.value = r.PHONENUM;
+                      var object = new Object();
+                      object.id=r.id;
+                      if(r.EMAIL!=null){
+                          this.email=r.EMAIL;
+                      }
+                      item.value=JSON.stringify(object); 
+                    this.dictOptionsUser.push(item);
+                    
+                  })
+                }
+                console.log("dictOptionsUser="+this.dictOptionsUser);
+          });
+
     },
     data () {
       return {       
@@ -275,6 +302,8 @@
         cmpagesItems:[], //为编辑保存旧变量，否则选择后原来的items的元素就消失
         compagesId:null,
         description: 'material管理页面',
+        dictOptionsUser:[],
+        selectUserValue:"",
         // 表头
         dialogVisible: false,
         modal: {
@@ -629,6 +658,28 @@
               });
           }
 
+        },
+        selectFn(e){
+            console.log(e);
+            console.log(e.target.selectedIndex);
+            console.log(e.target.value);
+            for(var j = 0,len=this.dictOptionsUser.length; j < len; j++) {
+                  var item = this.dictOptionsUser[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.id;
+                  if(j==e.target.selectedIndex){
+                    this.queryParam.catalog=uid;                  
+                    break;
+                  }
+            } 
+            
+            console.log(this.queryParam);
+        },
+        forAllChange(value){
+          this.queryParam.storage0=value
+        },
+        forAllChange2(value){
+          this.queryParam.combination=value
         }
     }
   }
