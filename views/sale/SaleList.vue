@@ -11,6 +11,17 @@
     </a-row>
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+
+        <a-col :xl="4" :lg="5" :md="8" :sm="20">
+            <a-form-item label="选择分类" >
+
+              <select v-model="selectCataValue" @change="selectCn">
+            <option :value="list.text" v-for="list in dictOptionsCata">{{list.text}}</option>
+            </select>
+            
+          </a-form-item>
+        </a-col>
+
         <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="名称">
             <j-input placeholder="请输入名字模糊查询" v-model="queryParam.name"></j-input>
@@ -312,6 +323,28 @@
                   this.realName=res.result.realname;
                 }
               });
+
+          getAction("tree/tree/selectNotChilde", {}).then((res) => {             
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    console.log("res===="+r);
+                    var item = new Object();
+                      //item.id=r.ID;
+                      item.text=r.username;
+                      //item.value = r.PHONENUM;
+                      var object = new Object();
+                      object.id=r.id;
+                      if(r.EMAIL!=null){
+                          this.email=r.EMAIL;
+                      }
+                      item.value=JSON.stringify(object); 
+                    this.dictOptionsCata.push(item);
+
+                  })
+                }
+                console.log("dictOptionsCata="+this.dictOptionsCata);
+          });
+
     },   
     data () {
       return {
@@ -323,6 +356,8 @@
         },
         selectUserValue:"",
         dictOptionsUser:[],
+        selectCataValue:"",
+        dictOptionsCata:[],
         selectTypeValue:"",
         dictOptionsType:[{
           text:"现金",
@@ -483,6 +518,7 @@
         ids += record.id + ",";
         this.receiptData=[];
         this.orderNumber=this.randomNumber();
+
         getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
               console.log(res.result);
               if (res.success) {
@@ -500,6 +536,7 @@
           });
         
       },
+
        detail(record){
               console.log(record);
             var that = this;
@@ -867,7 +904,23 @@
         document.getElementById("total").innerText=total.toFixed(2);
 
 
-      }
+      },
+      selectCn(e){
+            console.log(e);
+            console.log(e.target.selectedIndex);
+            console.log(e.target.value);
+            for(var j = 0,len=this.dictOptionsCata.length; j < len; j++) {
+                  var item = this.dictOptionsCata[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.id;
+                  if(j==e.target.selectedIndex){
+                    this.queryParam.catalog=uid;                  
+                    break;
+                  }
+            } 
+            
+            console.log(this.queryParam);
+        }
     }
   }
 </script>

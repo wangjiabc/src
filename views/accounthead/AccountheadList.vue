@@ -15,6 +15,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          
         <a-col :xl="4" :lg="5" :md="8" :sm="20">
             <a-form-item label="名称">
               <j-input placeholder="请输入账号模糊查询" v-model="queryParam.materialName"></j-input>
