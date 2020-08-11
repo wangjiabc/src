@@ -364,30 +364,26 @@
      addCompagesSave(){
 
               this.modal3.visible=false;
-              var ids = "";
-              for (var a = 0; a < this.selectedRowKeys.length; a++) {
+              this.url.list=this.url.list3;
+              getAction(this.url.list3, this.queryParam).then(res => {
+                  this.dataSource = res.result.records
+                  this.ipagination.total = res.result.total;
+              })            
+              var ids =new Array();
+               for (var a = 0; a < this.selectedRowKeys.length; a++) {
                     ids += this.selectedRowKeys[a] + ",";
               }
               var that = this;
               console.log(ids);
-              getAction("/food/material/updateCatalog", {catalog:this.catalog,items: ids}).then((res) => {
+              var itemsstring=encodeURI(JSON.stringify(this.selectedRowKeys));
+              getAction("/food/material/updateCatalog", {catalog:this.catalog,items: itemsstring}).then((res) => {
               if (res.success) {
-                    res.result.findIndex( r=> {
-                    var item = new Object();
-                      item.id=r.id;
-                      item.name = r.name;
-                      item.number= 1;
-                    this.items.push(item);
-                  })
-                }
+                    alert(res.message);
+                  }else{
+                    alert("失败");
+                  }
+                
               });
-              console.log(this.items);
-              console.log(this.cmpagesItems);
-              this.cmpagesItems.findIndex( r=> {
-                this.items.push(r);
-              });
-              console.log(this.items);
-              
         },
     }
   }
