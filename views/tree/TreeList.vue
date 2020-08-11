@@ -65,6 +65,8 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="setPut(record)">添加子目录</a>
+          <a-divider type="vertical" />
+          <a @click="addCompages(record)">添加商品到目录</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -90,6 +92,38 @@
     </template>
   </div>
     <tree-modal ref="modalForm" @ok="modalFormOk"></tree-modal>
+
+    <a-row :gutter="24">
+          <a-col>
+            <j-modal
+              :visible.sync="modal3.visible"
+              :width="1200"
+              :title="modal3.title"
+              :fullscreen.sync="modal3.fullscreen"
+            >
+
+            <a-table
+                ref="table"
+              size="middle"
+                bordered
+                rowKey="id"
+                :columns="columns2"
+                :dataSource="dataSource"
+                :pagination="ipagination"
+                :loading="loading"
+                :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+                :scroll="tableScroll"
+                @change="handleTableChange">
+              </a-table> 
+
+            <div slot="footer">
+    	            <Button @click="hideModel3()">关闭</Button>
+                  <Button type="primary" @click="addCompagesSave()">确定</Button>
+            </div>
+            </j-modal>
+          </a-col>
+     </a-row>
+
   </a-card>
 </template>
 
@@ -108,6 +142,11 @@
     data () {
       return {
         description: 'tree管理页面',
+        modal3: {
+          visible: false,
+          fullscreen: false,
+        },
+        catalog:0,
         // 表头
         columns: [
           {
@@ -157,6 +196,71 @@
             scopedSlots: { customRender: 'action' }
           }
         ],
+        columns2: [
+          {
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:30,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          {
+            title:'名称',
+            align:"center",
+            dataIndex: 'name',
+            width:100
+          },          
+          {
+            title:'库存',
+            align:"center",
+            dataIndex: 'storage',
+            width:100
+          },
+          {
+            title:'成本',
+            align:"center",
+            dataIndex: 'cost',
+            width:80
+          },
+          {
+            title:'零售价',
+            align:"center",
+            dataIndex: 'retailprice',
+            width:80
+          },
+          {
+            title:'备注',
+            align:"center",
+            dataIndex: 'remark',
+            width:80
+          },
+          {
+            title:'组合',
+            align:"center",
+            dataIndex: 'combination',
+            width:50
+          },       
+          {
+            title:'创建日期',
+            align:"center",
+            dataIndex: 'createTime',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            },
+            width:100
+          },        
+          {
+            title: '操作',
+            dataIndex: 'action',
+            align:"center",
+            fixed:"right",
+            width:260,
+            scopedSlots: { customRender: 'action' }
+          }
+        ],
         url: {
           list: "/tree/tree/list?column=createTime&order=asc",
           delete: "/tree/tree/delete",
@@ -166,7 +270,9 @@
           new:"/tree/tree/insertTree",
           put:"/tree/tree/addTree",
           addPut:"/tree/tree/addRootTree",
-          delChildTree:"/tree/tree/delChildTree"
+          delChildTree:"/tree/tree/delChildTree",
+          list2: "/food/material/list?column=storage&order=asc",
+          list3: "/tree/tree/list?column=createTime&order=asc"
         },
         dictOptions:{},
         num:0,
@@ -234,7 +340,55 @@
               }
            });
 
-      }
+      },
+      hideModel3(){
+        this.modal3.visible=false;
+        this.url.list=this.url.list3;
+        getAction(this.url.list3, this.queryParam).then(res => {
+                this.dataSource = res.result.records
+                this.ipagination.total = res.result.total;
+        })
+      },
+      addCompages(record){
+            this.modal3.title="";
+            this.modal3.visible=true;
+            this.items=[];
+            this.url.list=this.url.list2;
+            getAction(this.url.list2, this.queryParam).then(res => {
+                this.dataSource = res.result.records
+                this.ipagination.total = res.result.total;
+            });
+            this.catalog=record.id;
+        },
+
+     addCompagesSave(){
+
+              this.modal3.visible=false;
+              var ids = "";
+              for (var a = 0; a < this.selectedRowKeys.length; a++) {
+                    ids += this.selectedRowKeys[a] + ",";
+              }
+              var that = this;
+              console.log(ids);
+              getAction("/food/material/updateCatalog", {catalog:this.catalog,items: ids}).then((res) => {
+              if (res.success) {
+                    res.result.findIndex( r=> {
+                    var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.number= 1;
+                    this.items.push(item);
+                  })
+                }
+              });
+              console.log(this.items);
+              console.log(this.cmpagesItems);
+              this.cmpagesItems.findIndex( r=> {
+                this.items.push(r);
+              });
+              console.log(this.items);
+              
+        },
     }
   }
 </script>

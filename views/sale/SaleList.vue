@@ -165,6 +165,7 @@
               <td colspan="2" width="220">数量</td>
               <td colspan="2" width="220">单价</td>
               <td colspan="2" width="200">总价</td>
+              <td colspan="2" width="200">条形码</td>
               <td colspan="2" width="170">备注</td>
             </tr>
             <tr v-for="(item,index) in receiptData" :key="index">
@@ -173,6 +174,7 @@
               <td colspan="2" width="220" contentEditable="true" id="tNumber" >{{ item.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice">{{ item.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice">{{ item.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tCode">{{ item.code }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark">{{ item.remark }}</td>
             </tr>
             <tr v-for="(item2,index2) in receiptData2" :key="'info-2'+index2">
@@ -181,6 +183,7 @@
               <td colspan="2" width="220" contentEditable="true" id="tNumber2" >{{ item2.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice2">{{ item2.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice2">{{ item2.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tCode2">{{ item2.code }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark2">{{ item2.remark }}</td>
             </tr>
             <tr v-for="(item3,index3) in receiptData3" :key="'info-3'+index3">
@@ -189,6 +192,7 @@
               <td colspan="2" width="220" contentEditable="true" id="tNumber3" >{{ item3.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice3">{{ item3.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice3">{{ item3.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tCode3">{{ item3.code }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark3">{{ item3.remark }}</td>
             </tr>
             <tr v-for="(item4,index4) in receiptData4" :key="'info-4'+index4">
@@ -197,6 +201,7 @@
               <td colspan="2" width="220" contentEditable="true" id="tNumber4" >{{ item4.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice4">{{ item4.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice4">{{ item4.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tCode4">{{ item4.code }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark4">{{ item4.remark }}</td>
             </tr>
             <tr v-for="(item5,index5) in receiptData5" :key="'info-5'+index5">
@@ -205,13 +210,14 @@
               <td colspan="2" width="220" contentEditable="true" id="tNumber5" >{{ item5.number }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRetailprice5">{{ item5.retailprice }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tTotalprice5">{{ item5.totalprice }}</td>
+              <td colspan="2" width="220" contentEditable="true" id="tCode5">{{ item5.code }}</td>
               <td colspan="2" width="220" contentEditable="true" id="tRemark5">{{ item5.remark }}</td>
             </tr>
             <tr>
               <td colspan="2" width="100" height="30" >金额合计(大写)</td>
               <td colspan="3" width="200" height="30" id="totalBig"></td>
               <td colspan="2" width="100" height="30" >金额合计(小写)</td>
-              <td colspan="3" width="200" height="30" id="total"></td>
+              <td colspan="6" width="400" height="30" id="total"></td>
             </tr>
           </table>
           <div style="width: 100%;margin-bottom: 10px;">
@@ -577,14 +583,23 @@
           if (this.openId.endsWith('_')) {
             this.openId = this.openId.substring(0, this.openId.length - 1)
            }
+        console.log(this.openId);
+        var code=this.openId;
+         getAction("/barCode/barCode/listByCode", {code: this.openId}).then((res) => {
 
-        var that = this;
-        this.modal.visible=true;
-        var ids = "";
-        ids += this.openId + ",";
+         if (res.success) {
+           if(res.result.records.length>0){
+
+             this.modal.visible=true;
+          var idres = res.result.records[0];
+          var ids=idres.materialId;
+          console.log("ids==="+ids);
+
+        
         this.receiptData=[];
         this.orderNumber=this.randomNumber();
-        getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+        
+       getAction(this.url.queryByIdsUrl, {ids: ids}).then((res) => {
               console.log(res.result);
               if (res.success) {
                   res.result.findIndex( r=> {
@@ -594,11 +609,23 @@
                       item.retailprice= r.retailprice;
                       item.number=1;
                       item.totalprice=item.retailprice*item.number;
+                      item.code=code;
                     this.receiptData.push(item);
                   })
                 }
                 console.log(this.receiptData);
-          });
+           });
+
+            this.openId=''
+
+           
+          }else{
+             alert("商品不存在");
+          }
+         }else{
+             alert("商品不存在");
+          }
+         });
 
           this.openId=''
 
@@ -634,6 +661,7 @@
           var number=document.getElementById("tNumber").innerText;
           var retailprice=document.getElementById("tRetailprice").innerText;
           var totalprice=document.getElementById("tTotalprice").innerText;
+          var code=document.getElementById("tCode").innerText;
           var remark=document.getElementById("tRemark").innerText;
 
           var object = new Object();
@@ -649,6 +677,9 @@
             object.type=type;
             object.income=1;
           }
+          if(code!=null&&code!=""){
+            object.code=code;
+          }
           arr.push(object);
 
           if(this.receiptData2.length>0){
@@ -656,6 +687,7 @@
           number=document.getElementById("tNumber2").innerText;
           retailprice=document.getElementById("tRetailprice2").innerText;
           totalprice=document.getElementById("tTotalprice2").innerText;
+          code=document.getElementById("tCode2").innerText;
           remark=document.getElementById("tRemark2").innerText;
 
           if(id!=null){
@@ -670,7 +702,9 @@
             object.supplierId=supplierId;
             object.supplier=supplier;
             object.type=type;
-          
+            if(code!=null&&code!=""){
+              object.code=code;
+            }
             arr.push(object);
 
           }
@@ -681,6 +715,7 @@
           number=document.getElementById("tNumber3").innerText;
           retailprice=document.getElementById("tRetailprice3").innerText;
           totalprice=document.getElementById("tTotalprice3").innerText;
+          code=document.getElementById("tCode3").innerText;
           remark=document.getElementById("tRemark3").innerText;
 
           if(id!=null){
@@ -695,7 +730,9 @@
             object.supplierId=supplierId;
             object.supplier=supplier;
             object.type=type;
-          
+            if(code!=null&&code!=""){
+              object.code=code;
+            }
             arr.push(object);
 
           }
@@ -705,6 +742,7 @@
           number=document.getElementById("tNumber4").innerText;
           retailprice=document.getElementById("tRetailprice4").innerText;
           totalprice=document.getElementById("tTotalprice4").innerText;
+          code=document.getElementById("tCode4").innerText;
           remark=document.getElementById("tRemark4").innerText;
 
           if(id!=null){
@@ -719,7 +757,9 @@
             object.supplierId=supplierId;
             object.supplier=supplier;
             object.type=type;
-          
+            if(code!=null&&code!=""){
+              object.code=code;
+            }
             arr.push(object);
 
           }
@@ -729,6 +769,7 @@
           number=document.getElementById("tNumber5").innerText;
           retailprice=document.getElementById("tRetailprice5").innerText;
           totalprice=document.getElementById("tTotalprice5").innerText;
+          code=document.getElementById("tCode5").innerText;
           remark=document.getElementById("tRemark5").innerText;
 
           if(id!=null){
@@ -743,7 +784,9 @@
             object.supplierId=supplierId;
             object.supplier=supplier;
             object.type=type;
-          
+            if(code!=null&&code!=""){
+              object.code=code;
+            }
             arr.push(object);
 
           }
@@ -920,7 +963,7 @@
             } 
             
             console.log(this.queryParam);
-        }
+        },
     }
   }
 </script>

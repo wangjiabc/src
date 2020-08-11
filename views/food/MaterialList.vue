@@ -218,9 +218,11 @@
               <template v-for="item in items">
                 <div class="modal">
                   <div class="tit">
-                    <li style="width: 30%;display: inline-block">商品名称：{{item.name}}</li>   
+                    <li style="width: 20%;display: inline-block">商品名称：{{item.name}}</li>   
                     <li class="bbb" style="width: 10%;display: inline-block">成本：</li>  
-                    <input style="size:5;display: inline-block" type="text"  v-model="item.cost">          
+                    <input style="size:5;display: inline-block" type="text"  v-model="item.cost">   
+                    <li class="bbb" style="width: 10%;display: inline-block">条型码：</li>  
+                    <input style="size:5;display: inline-block" type="text" v-model="item.code">         
                   </div>  
                 </div>              
               </template>

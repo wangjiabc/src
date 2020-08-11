@@ -28,7 +28,11 @@
           </a-form-item>
           </a-col>
 
-          
+          <a-col :xl="5" :lg="5" :md="8" :sm="20">
+            <a-form-item label="条形码">
+          <j-input placeholder="请输入条形码查询" v-model="queryParam.code"></j-input>
+          </a-form-item>
+          </a-col>
 
           <a-col :xl="3" :lg="3" :md="8" :sm="24">
             <a-form-item label="是否收款">
@@ -43,7 +47,7 @@
         </a-row>
 
       <a-row :gutter="24">
-        <a-col :xl="4" :lg="5" :md="8" :sm="20">
+        <a-col :xl="6" :lg="8" :md="8" :sm="20">
             <a-form-item label="选择客户" :labelCol="labelCol" :wrapperCol="wrapperCol" >
 
               <select v-model="selectUserValue" @change="selectFn">
@@ -51,7 +55,7 @@
             </select>
             
           </a-form-item>
-          </a-col>
+        </a-col>
           <a-col :xl="5" :lg="5" :md="8" :sm="20">
             <a-form-item label="开始时间">
               <j-date placeholder="请选择开始时间" v-model="queryParam.startDate"></j-date>
@@ -391,7 +395,11 @@
             align:"center",
             dataIndex: 'payName'
           },
-
+          {
+            title:'条形码',
+            align:"center",
+            dataIndex: 'code'
+          },
           {
             title:'备注',
             align:"center",
