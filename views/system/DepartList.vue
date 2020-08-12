@@ -119,12 +119,47 @@
                   </a-radio-group>
                 </template>
               </a-form-item>
+             
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="排序">
-                <a-input-number v-decorator="[ 'departOrder',{'initialValue':0}]"/>
+                label="commissionType">
+                <template >
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                    <a-radio value="0">
+                      0
+                    </a-radio>
+                  </a-radio-group>
+                </template>
+                <template >
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                    <a-radio value="1">
+                      1
+                    </a-radio>
+                  </a-radio-group>
+                </template>
+                <template>
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                    <a-radio value="2">
+                      2
+                    </a-radio>
+                  </a-radio-group>
+                </template>
               </a-form-item>
+              
+              <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="amount">
+                <a-input placeholder="amount" v-decorator="['amount', {'initialValue':''}]"/>
+              </a-form-item>
+              <a-form-item
+                :labelCol="labelCol"
+                :wrapperCol="wrapperCol"
+                label="percentage">
+                <a-input placeholder="percentage" v-decorator="['percentage', {'initialValue':''}]"/>
+              </a-form-item>
+
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
@@ -150,9 +185,9 @@
             </div>
           </a-card>
         </a-tab-pane>
-        <a-tab-pane tab="部门权限" key="2" forceRender>
+      <!--  <a-tab-pane tab="部门权限" key="2" forceRender>
           <depart-auth-modal ref="departAuth"/>
-        </a-tab-pane>
+        </a-tab-pane>  -->
       </a-tabs>
 
     </a-col>
@@ -180,6 +215,18 @@
     {
       title: '机构编码',
       dataIndex: 'orgCode',
+    },
+    {
+      title: 'commissionType',
+      dataIndex: 'commissionType'
+    },
+    {
+      title: 'amount',
+      dataIndex: 'amount'
+    },
+    {
+      title: 'percentage',
+      dataIndex: 'percentage'
     },
     {
       title: '手机号',
@@ -255,7 +302,8 @@
           departName: {rules: [{required: true, message: '请输入机构/部门名称!'}]},
           orgCode: {rules: [{required: true, message: '请输入机构编码!'}]},
           orgCategory: {rules: [{required: true, message: '请输入机构类型!'}]},
-          mobile: {rules: [{validator: this.validateMobile}]}
+          mobile: {rules: [{validator: this.validateMobile}]},
+          commissionType:{rules: [{validator: this.commissionType}]}
         },
         url: {
           delete: '/sys/sysDepart/delete',
@@ -412,7 +460,7 @@
         this.selectedKeys = [record.key]
         this.model.parentId = record.parentId
         this.setValuesToForm(record)
-        this.$refs.departAuth.show(record.id);
+       // this.$refs.departAuth.show(record.id);
 
       },
       // 触发onSelect事件时,为部门树右侧的form表单赋值
@@ -423,7 +471,7 @@
           this.orgCategoryDisabled = false;
         }
         this.form.getFieldDecorator('fax', {initialValue: ''})
-        this.form.setFieldsValue(pick(record, 'departName','orgCategory', 'orgCode', 'departOrder', 'mobile', 'fax', 'address', 'memo'))
+        this.form.setFieldsValue(pick(record, 'departName','orgCategory', 'orgCode', 'departOrder', 'commissionType','commission','amount','percentage','mobile', 'fax', 'address', 'memo'))
       },
       getCurrSelectedTitle() {
         return !this.currSelected.title ? '' : this.currSelected.title
