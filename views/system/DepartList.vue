@@ -157,7 +157,7 @@
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
                 label="percentage">
-                <a-input placeholder="percentage" v-decorator="['percentage', {'initialValue':''}]"/>
+                <a-input placeholder="percentage" v-decorator="['percentage', {'initialValue':''}] "/>
               </a-form-item>
 
               <a-form-item
