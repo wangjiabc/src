@@ -187,7 +187,7 @@
 <script>
   import DepartModal from './DepartModal'
   import pick from 'lodash.pick'
-  import {queryDepartTreeList, searchByKeywords, deleteByDepartId} from '@/api/api'
+  import {queryDepartTreeList,queryDepartCommisionTreeList, searchByKeywords, deleteByDepartId} from '@/api/api'
   import {httpAction, deleteAction} from '@/api/manage'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import DepartAuthModal from './DepartAuthModal'
@@ -304,7 +304,7 @@
           userId:"food/material/queryByIds", // 引入生成添加用户情况下的url
           syncUserByUserName:"/process/extActProcess/doSyncUserByUserName",//同步用户到工作流
           delete: '/sys/sysDepart/delete',
-          edit: '/sys/sysDepart/edit',
+          edit: '/commissionManner/commissionManner/edit',
           deleteBatch: '/sys/sysDepart/deleteBatch',
           exportXlsUrl: "sys/sysDepart/exportXls",
           importExcelUrl: "sys/sysDepart/importExcel",
@@ -507,7 +507,7 @@
         console.log("userId=="+that.userId);
         that.treeData = []
         that.departTree = []
-        queryDepartTreeList().then((res) => {
+        queryDepartCommisionTreeList({materialId:that.userId}).then((res) => {
           if (res.success) {
             for (let i = 0; i < res.result.length; i++) {
               let temp = res.result[i]
@@ -680,8 +680,25 @@
               return
             }
 
+            this.currSelected.materialId=this.userId;
+
             let formData = Object.assign(this.currSelected, values)
             console.log('Received values of form: ', formData)
+
+            if(this.currSelected.commissionType==1){
+              if(this.currSelected.amount==null){
+                this.$message.warning('金额不能为空!')
+                 return
+              }
+            }
+            
+            if(this.currSelected.commissionType==2){
+              if(this.currSelected.percentage==null){
+                this.$message.warning('百分比不能为空!')
+                 return
+              }
+            }
+            
             httpAction(this.url.edit, formData, 'put').then((res) => {
               if (res.success) {
                 this.$message.success('保存成功!')

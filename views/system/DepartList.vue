@@ -500,7 +500,7 @@
               this.$message.warning('请点击选择要修改部门!')
               return
             }
-
+          
             let formData = Object.assign(this.currSelected, values)
             console.log('Received values of form: ', formData)
             httpAction(this.url.edit, formData, 'put').then((res) => {
