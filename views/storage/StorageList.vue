@@ -15,7 +15,7 @@
       <a-button type="primary" icon="download" @click="handleExportXls('material')">导出</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batch"><a-icon type="delete"/>一键对库</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
@@ -79,8 +79,36 @@
 
       </a-table>
     </div>
-
+<a-row :gutter="24">
+          <a-col>
+            <j-modal
+              :visible.sync="modal2.visible"
+              :width="800"
+              :title="modal2.title"
+              :fullscreen.sync="modal2.fullscreen"
+            >
+              <template v-for="item in items">
+                <div class="modal">
+                  <div class="tit">
+                    <li style="width: 20%;display: inline-block">商品名称：{{item.name}}</li>   
+                    <li class="bbb" style="width: 10%;display: inline-block">库存：</li>  
+                    <input style="size:5;display: inline-block" type="text"  v-model="item.storage">   
+                    <li class="bbb" style="width: 10%;display: inline-block">实库：</li>  
+                    <input style="size:5;display: inline-block" type="text" v-model="item.realStorage">         
+                  </div>  
+                </div>              
+              </template>
+              <div slot="footer">
+    	            <Button @click="hideModel2()">关闭</Button>
+                  <Button type="primary" @click="save2">保存</Button>
+              </div>
+            </j-modal>
+          </a-col>
+     </a-row>
     <material-modal ref="modalForm" @ok="modalFormOk"></material-modal>
+
+
+
   </a-card>
 </template>
 
@@ -90,6 +118,7 @@
   import MaterialModal from './modules/StorageModal'
   import JInput from '@/components/jeecg/JInput.vue';
   import { colAuthFilter } from "@/utils/authFilter";
+  import {getAction,httpAction,postAction} from '@/api/manage'
 
   export default {
     name: "StorageList",
@@ -106,8 +135,13 @@
      },
     data () {
       return {
+        items: [],
         description: 'material管理页面',
         // 表头
+        modal2: {
+          visible: false,
+          fullscreen: false,
+        },
         columns: [
           {
             title: '#',
@@ -190,11 +224,12 @@
           }
         ],
         url: {
-          list: "/food/material/list?column=storage&order=asc",
+          list: "/food/material/list?column=storage&order=asc&combination=0",
           delete: "/food/material/delete",
           deleteBatch: "/food/material/deleteBatch",
           exportXlsUrl: "/food/material/exportXls",
           importExcelUrl: "food/material/importExcel",
+          queryByIdsUrl: "food/material/queryByIds",
         },
         dictOptions:{},
         tableScroll:{x :18*80+50}
@@ -207,7 +242,68 @@
     },
     methods: {
       initDictConfig(){
+      },
+      batch(){
+        this.modal2.title="一键对库";
+          this.modal2.visible=true;
+          this.items=[];
+          this.cmpagesItems=[];
+          var ids = "";
+          for (var a = 0; a < this.selectedRowKeys.length; a++) {
+            ids += this.selectedRowKeys[a] + ",";
+          }
+          console.log("ids="+ids);
+          var that = this;
+          getAction(that.url.queryByIdsUrl, {ids: ids}).then((res) => {
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    console.log(r);
+                    var item = new Object();
+                      item.id=r.id;
+                      item.name = r.name;
+                      item.storage=Number(r.storage);
+                      item.realStorage=Number(r.realStorage);
+                    this.items.push(item);
+                  })
+                }
+          });
+      },
+      hideModel2(){
+        this.modal2.visible=false;
+      },
+      save2(rows){
+         var that = this;
+         var arr=this.items;
+         var item=[];
+         for(var j=0,len=arr.length;j<len;j++){
+                console.log(arr[j]);
+                var id=arr[j].id;
+                var it = new Object();
+                it.id=id;
+                item.push(id);
+
+         }
+
+          var formData=encodeURI(JSON.stringify(arr));
+
+          var Url=this.url.storageAddUrl;
+
+          getAction("/storageLog/storageLog//check", {items:formData}).then((res) => {
+              if (res.success) {
+                that.$message.success(res.message);
+                that.loadData();
+                that.onClearSelected();
+                this.modal2.visible=false;
+              } else {
+                that.$message.warning(res.message);
+              }
+          }).finally(() => {
+              that.loading = false;
+              this.modal2.visible=false;
+          });
+
       }
+
     }
   }
 </script>

@@ -633,6 +633,8 @@
         },
         save(){
           
+          this.calculate();
+
           var supplierId;
           var supplier;
           try{

@@ -172,7 +172,7 @@
           </div>
           <div style="width: 100%;">
             <div style="width: 40%;float: left">客户名称:{{supplier}}</div>
-            <div style="width: 40%;float: left">收款类型:{{typeName}}</div>
+            <div style="width: 40%;float: left">收款类型:{{type}}</div>
             <div style="width: 20%;float: right">收款日期:{{date}}</div>
           </div>
           <table class="table" id="printpdf">
@@ -525,6 +525,10 @@
                   this.phoneNum=result.phone;
                   this.orderNumber=result.billno;
                   this.email=result.email;
+                  this.type=result.type;
+                  var temp = new Date(result.date);
+                  var t = temp.getFullYear()+"-"+(temp.getMonth()+1)+"-"+temp.getDate();
+                  this.date=t;
                   var i=0;
                   accountheads.findIndex( r=> {                  
                       var item = new Object();
