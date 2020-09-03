@@ -126,8 +126,15 @@
       ...mapActions(["Logout"]),
       ...mapGetters(["nickname", "avatar","userInfo"]),
       getAvatar(){
-        console.log('url = '+ window._CONFIG['staticDomainURL']+"/"+this.avatar())
-        return window._CONFIG['staticDomainURL']+"/"+this.avatar()
+        var aaa=null;
+        try{
+          aaa=this.avatar();
+        }catch(e){
+
+        }
+        console.log('url = '+ window._CONFIG['staticDomainURL']+"/"+aaa)
+        console.log("avatar="+aaa);
+        return window._CONFIG['staticDomainURL']+"/"+aaa
       },
       handleLogout() {
         const that = this

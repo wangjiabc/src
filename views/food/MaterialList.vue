@@ -116,7 +116,7 @@
            <a-divider type="vertical" />
            <a @click="detail(record.id)">详情</a>
            <a-divider type="vertical" />
-        <!--  <a-divider type="vertical" />
+          <!--  <a-divider type="vertical" />
           <a @click="newHandleEdit(record)">编辑</a>
           <a-divider type="vertical" />-->
           <a-dropdown>

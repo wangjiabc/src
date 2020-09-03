@@ -80,11 +80,12 @@
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
-
+          <a-divider type="vertical" />
+         <!-- <a @click="ccc(record)">ccc</a> -->
         </span>
 
-
       </a-table>
+      
     </div>
     <!-- table区域-end -->
 
@@ -328,7 +329,24 @@
         },
         forAllChange2(value){
           this.queryParam.combination=value
-        }
+        },
+        ccc(record) {
+
+        let that = this;
+
+        that.userId = record.id;
+        
+        getAction("/commissionDetail/commissionDetail/saleCommission", {id:record.id}).then((res) => {             
+              if (res.success) {
+                  res.result.findIndex( r=> {
+                    console.log("res===="+r);
+  
+                  })
+                }
+
+          });
+
+      },
     }
 
   }
