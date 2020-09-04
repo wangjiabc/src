@@ -6,7 +6,7 @@
 
         <a-row :gutter="24">
         <a-col :xl="6" :lg="8" :md="8" :sm="20">
-            <a-form-item label="选择客户"  >
+            <a-form-item label="选择员工"  >
 
               <select v-model="selectUserValue" @change="selectFn">
             <option :value="list.text" v-for="list in dictOptionsUser">{{list.text}}</option>
@@ -147,22 +147,26 @@
            }
          });
 
-         getAction(this.url.selectGroupUserUrl, {}).then((res) => {             
+         getAction("/commissionUser/commissionUser/selectGroupUser", {}).then((res) => {             
               if (res.success) {
-                  res.result.findIndex( r=> {
-                    console.log("res===="+r);
-                    var item = new Object();
+                 var item = new Object();
                       //item.id=r.ID;
-                      item.text=r.SUPPLIER;
+                      item.text="";
                       //item.value = r.PHONENUM;
                       var object = new Object();
-                      object.phone=r.PHONENUM;
-                      object.id=r.ID;
-                      object.address=r.ADDRESS;
-                      object.fax=r.FAX;
-                      if(r.EMAIL!=null){
-                          this.email=r.EMAIL;
-                      }
+                  var object = new Object();
+                      object.userId=null;
+                      item.value=JSON.stringify(object); 
+                    this.dictOptionsUser.push(item);
+                    
+                  res.result.findIndex( r=> {
+                    console.log("res====",r);
+                    var item = new Object();
+                      //item.id=r.ID;
+                      item.text=r.realName;
+                      //item.value = r.PHONENUM;
+                      var object = new Object();
+                      object.userId=r.userId;
                       item.value=JSON.stringify(object); 
                     this.dictOptionsUser.push(item);
                     
@@ -300,7 +304,15 @@
             console.log(e);
             console.log(e.target.selectedIndex);
             console.log(e.target.value);
-            
+            for(var j = 0,len=this.dictOptionsUser.length; j < len; j++) {
+                  var item = this.dictOptionsUser[j];                 
+                  var object=JSON.parse(item.value);
+                  var uid=object.userId;
+                  if(j==e.target.selectedIndex){
+                    this.queryParam.userId=uid;                  
+                    break;
+                  }
+            } 
             console.log(this.queryParam);
         },
         searchQuery() {
