@@ -138,6 +138,11 @@
             dataIndex: 'currentStorage'
           },
           {
+            title:'条形码',
+            align:"center",
+            dataIndex: 'code'
+          },
+          {
             title:'创建日期',
             align:"center",
             dataIndex: 'createTime',
