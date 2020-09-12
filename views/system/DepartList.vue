@@ -123,25 +123,25 @@
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="commissionType">
+                label="工作经费">
                 <template >
-                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="">
                     <a-radio value="0">
-                      0
+                      无
                     </a-radio>
                   </a-radio-group>
                 </template>
                 <template >
-                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择提成方式">
                     <a-radio value="1">
-                      1
+                      按固定金额
                     </a-radio>
                   </a-radio-group>
                 </template>
                 <template>
-                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择机构类型">
+                  <a-radio-group v-decorator="['commissionType',validatorRules.commissionType]" placeholder="请选择提成方式">
                     <a-radio value="2">
-                      2
+                      按百分比
                     </a-radio>
                   </a-radio-group>
                 </template>
@@ -150,14 +150,14 @@
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="amount">
-                <a-input placeholder="amount" v-decorator="['amount', {'initialValue':''}]"/>
+                label="金额">
+                <a-input placeholder="金额" v-decorator="['amount', {'initialValue':''}]"/>
               </a-form-item>
               <a-form-item
                 :labelCol="labelCol"
                 :wrapperCol="wrapperCol"
-                label="percentage">
-                <a-input placeholder="percentage" v-decorator="['percentage', {'initialValue':''}] "/>
+                label="百分比">
+                <a-input placeholder="百分比" v-decorator="['percentage', {'initialValue':''}] "/>
               </a-form-item>
 
               <a-form-item
@@ -217,15 +217,15 @@
       dataIndex: 'orgCode',
     },
     {
-      title: 'commissionType',
+      title: '工作经费类型',
       dataIndex: 'commissionType'
     },
     {
-      title: 'amount',
+      title: '金额',
       dataIndex: 'amount'
     },
     {
-      title: 'percentage',
+      title: '百分比',
       dataIndex: 'percentage'
     },
     {
