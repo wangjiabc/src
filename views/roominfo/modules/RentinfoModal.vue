@@ -278,7 +278,6 @@
 import { httpAction } from '@/api/manage'
 import pick from 'lodash.pick'
 import JDate from '@/components/jeecg/JDate'
-import { queryFareitem } from '@/api/chartApi'
 
 export default {
   name: 'ChartinfoModal',
@@ -457,13 +456,6 @@ export default {
   },
   created() {
     console.log('1111');
-    queryFareitem().then(res => {
-      if (res.success) {
-        this.fareitemList = res.result
-      } else {
-        console.log(res.message)
-      }
-    })
   },
   mounted(){
     console.log('2222');

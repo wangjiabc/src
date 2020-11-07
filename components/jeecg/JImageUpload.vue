@@ -1,27 +1,30 @@
 <template>
-  <a-upload
-    name="file"
-    listType="picture-card"
-    :multiple="isMultiple"
-    :action="uploadAction"
-    :headers="headers"
-    :data="{biz:bizPath}"
-    :fileList="fileList"
-    :beforeUpload="beforeUpload"
-    :disabled="disabled"
-    :isMultiple="isMultiple"
-    :showUploadList="isMultiple"
-    @change="handleChange"
-    @preview="handlePreview">
-    <img v-if="!isMultiple && picUrl" :src="getAvatarView()" style="height:104px;max-width:300px"/>
-    <div v-else >
-      <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
-      <div class="ant-upload-text">{{ text }}</div>
-    </div>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
-      <img alt="example" style="width: 100%" :src="previewImage"/>
-    </a-modal>
-  </a-upload>
+  <div class="img">
+    <a-upload
+      name="file"
+      listType="picture-card"
+      :multiple="isMultiple"
+      :action="uploadAction"
+      :headers="headers"
+      :data="{biz:bizPath}"
+      :fileList="fileList"
+      :beforeUpload="beforeUpload"
+      :disabled="disabled"
+      :isMultiple="isMultiple"
+      :showUploadList="isMultiple"
+      @change="handleChange"
+      @preview="handlePreview"
+      :class="!isMultiple?'imgupload':''">
+      <img v-if="!isMultiple && picUrl" :src="getAvatarView()" style="height:104px;max-width:300px"/>
+      <div v-else class="iconp">
+        <a-icon :type="uploadLoading ? 'loading' : 'plus'" />
+        <div class="ant-upload-text">{{ text }}</div>
+      </div>
+      <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel()">
+        <img alt="example" style="width: 100%" :src="previewImage"/>
+      </a-modal>
+    </a-upload>
+  </div>
 </template>
 
 <script>
@@ -44,7 +47,6 @@
     data(){
       return {
         uploadAction:window._CONFIG['domianURL']+"/sys/common/upload",
-        urlView:window._CONFIG['staticDomainURL'],
         uploadLoading:false,
         picUrl:false,
         headers:{},
@@ -87,6 +89,9 @@
         } else {
           this.initFileList(val)
         }
+        if(!val || val.length==0){
+          this.picUrl = false;
+        }
       }
     },
     created(){
@@ -103,7 +108,7 @@
         let fileList = [];
         let arr = paths.split(",")
         for(var a=0;a<arr.length;a++){
-          let url = getFileAccessHttpUrl(arr[a],this.urlView,"http");
+          let url = getFileAccessHttpUrl(arr[a]);
           fileList.push({
             uid: uidGenerator(),
             name: getFileName(arr[a]),
@@ -156,7 +161,7 @@
       getAvatarView(){
         if(this.fileList.length>0){
           let url = this.fileList[0].url
-          return getFileAccessHttpUrl(url,this.urlView,"http")
+          return getFileAccessHttpUrl(url)
         }
       },
       handlePathChange(){
@@ -169,8 +174,14 @@
         if(!this.isMultiple){
           arr.push(uploadFiles[uploadFiles.length-1].response.message)
         }else{
-          for(var a=0;a<uploadFiles.length;a++){
-            arr.push(uploadFiles[a].response.message)
+          for(let a=0;a<uploadFiles.length;a++){
+            // update-begin-author:taoyan date:20200819 for:【开源问题z】上传图片组件 LOWCOD-783
+            if(uploadFiles[a].status === 'done' ) {
+              arr.push(uploadFiles[a].response.message)
+            }else{
+              return;
+            }
+            // update-end-author:taoyan date:20200819 for:【开源问题z】上传图片组件 LOWCOD-783
           }
         }
         if(arr.length>0){
@@ -198,5 +209,12 @@
 </script>
 
 <style scoped>
-
+  /* update--begin--autor:lvdandan-----date:20201016------for：j-image-upload图片组件单张图片详情回显空白
+  * https://github.com/zhangdaiscott/jeecg-boot/issues/1810
+  * https://github.com/zhangdaiscott/jeecg-boot/issues/1779
+  */
+  /deep/ .imgupload .ant-upload-select{display:block}
+  /deep/ .imgupload .ant-upload.ant-upload-select-picture-card{ width:120px;height: 120px;}
+  /deep/ .imgupload .iconp{padding:32px;}
+  /* update--end--autor:lvdandan-----date:20201016------for：j-image-upload图片组件单张图片详情回显空白*/
 </style>

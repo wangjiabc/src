@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: 'sbs',
+        default: 'Jeecg-Boot Pro',
         required: false
       },
       showTitle: {

@@ -9,8 +9,9 @@
           :options="selectOptions"
           allowClear
           :disabled="disabled"
-          :open="false"
+          :open="selectOpen"
           style="width: 100%;"
+          @dropdownVisibleChange="handleDropdownVisibleChange"
           @click.native="visible=(buttons?visible:true)"
         />
       </slot>
@@ -85,7 +86,8 @@
         selectValue: [],
         selectOptions: [],
         dataSourceMap: {},
-        visible: false
+        visible: false,
+        selectOpen: false,
       }
     },
     computed: {
@@ -116,10 +118,12 @@
         deep: true,
         handler(val) {
           let rows = val.map(key => this.dataSourceMap[key])
-          this.$emit('select', rows)
           let data = val.join(',')
-          this.$emit('input', data)
-          this.$emit('change', data)
+          if (data !== this.value) {
+            this.$emit('select', rows)
+            this.$emit('input', data)
+            this.$emit('change', data)
+          }
         }
       }
     },
@@ -127,6 +131,13 @@
       handleOptions(options, dataSourceMap) {
         this.selectOptions = options
         this.dataSourceMap = dataSourceMap
+      },
+      handleDropdownVisibleChange() {
+        // 解决antdv自己的bug —— open 设置为 false 了，点击后还是添加了 open 样式，导致点击事件失效
+        this.selectOpen = true
+        this.$nextTick(() => {
+          this.selectOpen = false
+        })
       },
     }
   }
@@ -142,7 +153,7 @@
     }
 
     .right {
-      width: @width ;
+      width: @width;
     }
 
     .full {
@@ -150,7 +161,7 @@
     }
 
     /deep/ .ant-select-search__field {
-        display: none !important;
-      }
+      display: none !important;
+    }
   }
 </style>

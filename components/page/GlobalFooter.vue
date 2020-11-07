@@ -3,7 +3,6 @@
     <div class="copyright">
       Copyright
       <a-icon type="copyright"/>
-      <span>zmkj 出品</span>
     </div>
   </div>
 </template>
